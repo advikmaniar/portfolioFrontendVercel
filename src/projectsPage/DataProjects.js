@@ -1,464 +1,509 @@
-import React, { useState } from 'react';
-import { Divider, Typography, Box, Container, IconButton } from '@mui/material';
-import { GitHub } from '@mui/icons-material';
-import Card from '@mui/material/Card';
-import CardMedia from '@mui/material/CardMedia';
-import CardContent from '@mui/material/CardContent';
+import React, { useState } from "react";
+import {
+  Box, Typography, Dialog, DialogContent, IconButton,
+  Chip, Tooltip, Divider,
+} from "@mui/material";
+import { GitHub, Close, ChevronLeft, ChevronRight } from "@mui/icons-material";
 import { FaKaggle, FaPython } from "react-icons/fa";
-import { SiScipy, SiPlotly, SiNumpy, SiScikitlearn, SiTensorflow, SiPandas, SiMongodb, SiMysql, SiStreamlit, SiTableau, SiKaggle } from "react-icons/si";
-import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
-import Tooltip from '@mui/material/Tooltip';
-import { IoIosClose } from "react-icons/io";
-import { StyledIconsPortfolio } from '../utils/utils';
+import {
+  SiScipy, SiPlotly, SiNumpy, SiScikitlearn,
+  SiTensorflow, SiPandas, SiMysql, SiStreamlit,
+} from "react-icons/si";
+import LikeButton from "./LikeButton";
 
-
+const toolIcons = {
+  "Python": <FaPython style={{ color: "#306998", fontSize: "1.3rem" }} />,
+  "TensorFlow": <SiTensorflow style={{ color: "#FFA101", fontSize: "1.3rem" }} />,
+  "Pandas": <SiPandas style={{ color: "#130751", fontSize: "1.3rem" }} />,
+  "Numpy": <SiNumpy style={{ color: "#4D76CE", fontSize: "1.3rem" }} />,
+  "MySQL": <SiMysql style={{ color: "#61DBFB", fontSize: "1.3rem" }} />,
+  "StreamLit": <SiStreamlit style={{ color: "#FF4B4B", fontSize: "1.3rem" }} />,
+  "Sklearn": <SiScikitlearn style={{ color: "#F79939", fontSize: "1.3rem" }} />,
+  "Plotly": <SiPlotly style={{ color: "#119DFF", fontSize: "1.3rem" }} />,
+  "Scipy": <SiScipy style={{ color: "#0D56A5", fontSize: "1.3rem" }} />,
+};
 
 const dataProjects = [
-    {
-        date: 'May 2023',
-        name: 'Stock Price Tool',
-        affiliation: 'New York Institute of Technology',
-        textSecondary: 'ML Powered Stock Prediction Model',
-        description: [
-            'Led a group of 4 developers to create an ML-based stock prediction model, achieving a prediction accuracy of 70%. ',
-            'Analyzed financial data for 50 stocks, including sentiment analysis with news data from Yahoo Finance API and Beautiful Soup. ',
-            'Developed an intuitive StreamLit dashboard to display real-time predictions for over 50 stocks.'
-        ],
-        tools: [
-            'Python',
-            'TensorFlow',
-            'StreamLit',
-            'MySQL',
-            'Pandas',
-        ],
-        images: ['/StockPredictionImages/StockPrediction_Image1.jpg', '/StockPredictionImages/StockPrediction_Image2.jpg', '/StockPredictionImages/StockPrediction_Image3.jpg', '/StockPredictionImages/StockPrediction_Image4.jpg'],
-        github: 'https://github.com/advikmaniar/Stock-Price'
-    },
-    {
-        date: 'May 2021',
-        name: 'Machine Learning in Healthcare',
-        affiliation: 'Self',
-        textSecondary: 'ML Powered Wellness Prediction Model',
-        description: [
-            "This is an interactive Machine Learning Web App developed using Python and StreamLit.",
-            "It uses ML algorithms to build powerful models and predict the risk of the user of having a Heart Attack or Breast Cancer based on the user's specific attributes.",
-        ],
-        tools: [
-            'Python',
-            'StreamLit',
-            'Sklearn',
-            'Pandas',
-            'TensorFlow',
-        ],
-        images: ['/MLHealthcareImages/MLHealthcare_Image1.png', '/MLHealthcareImages/MLHealthcare_Image2.png', '/MLHealthcareImages/MLHealthcare_Image3.png'],
-        github: 'https://github.com/advikmaniar/ML-Healthcare-Web-App'
-    },
-    {
-        date: 'December 2022',
-        name: 'Report Generator Tool',
-        affiliation: 'ETIC',
-        textSecondary: 'Data Analysis tool & PDF Generator for time-series data',
-        description: [
-            'REST APIs development with Java - SpringBoot',
-            'Chatbot Intent development with Genesys - Google DialogFlow',
-            'Version Control and CI/CD with Git - Jenkins - Openshift - XLD',
-            '15+ successful production deployments'
-        ],
-        tools: [
-            'Python',
-            'Sklearn',
-            'Pandas',
-            'Scipy',
-            'Plotly',
-        ],
-        images: ['/DataReaderImages/DataReader_Image1.png', '/DataReaderImages/DataReader_Image2.png', '/DataReaderImages/DataReader_Image3.png', '/DataReaderImages/DataReader_Image4.png',],
-        github: 'https://github.com/advikmaniar/Data-Analysis-Tool'
-    },
-    {
-        date: 'October 2024',
-        name: 'Anime House',
-        affiliation: 'New York Institute of Technology',
-        textSecondary: 'Recommendation System for Anime Lovers',
-        description: [
-            'Hybrid recommendation system developed with collaborative filtering algorithms.',
-            'Visualized and analyzed data with Plotly and Matplotlib.',
-            'Model trained on 20,000+ user reviews and ratings from MyAnimeList API.',
-            'User-based and Item-based CF to recommend anime based on user preferences.',
-            'Achieved an accuracy of 80% on the test dataset.'
-
-        ],
-        tools: [
-            'Python',
-            'Pandas',
-            'Sklearn',
-            'Plotly',
-
-        ],
-        images: ['/AnimeHouseImages/AnimeHouse_Image1.png', '/AnimeHouseImages/AnimeHouse_Image2.png', '/AnimeHouseImages/AnimeHouse_Image3.png'],
-        github: 'https://github.com/advikmaniar/interview-portal'
-    },
-
+  {
+    date: "May 2023",
+    name: "StockAI",
+    affiliation: "NY Institute of Technology",
+    textSecondary: "ML Powered Stock Prediction Model",
+    description: [
+      "Led a group of 4 developers to create an ML-based stock prediction model, achieving 70% accuracy.",
+      "Analyzed financial data for 50 stocks, including sentiment analysis with news from Yahoo Finance API.",
+      "Developed an intuitive StreamLit dashboard for real-time predictions over 50 stocks.",
+    ],
+    tools: ["Python", "TensorFlow", "StreamLit", "MySQL", "Pandas"],
+    images: [
+      "/StockPredictionImages/StockPrediction_Image1.jpg",
+      "/StockPredictionImages/StockPrediction_Image2.jpg",
+      "/StockPredictionImages/StockPrediction_Image3.jpg",
+      "/StockPredictionImages/StockPrediction_Image4.jpg",
+    ],
+    github: "https://github.com/advikmaniar/Stock-Price",
+  },
+  {
+    date: "May 2021",
+    name: "ML in Healthcare",
+    affiliation: null,
+    textSecondary: "ML Powered Wellness Prediction Model",
+    description: [
+      "Interactive Machine Learning Web App developed using Python and StreamLit.",
+      "Uses ML algorithms to predict the risk of Heart Attack or Breast Cancer based on user attributes.",
+    ],
+    tools: ["Python", "StreamLit", "Sklearn", "Pandas", "TensorFlow"],
+    images: [
+      "/MLHealthcareImages/MLHealthcare_Image1.png",
+      "/MLHealthcareImages/MLHealthcare_Image2.png",
+      "/MLHealthcareImages/MLHealthcare_Image3.png",
+    ],
+    github: "https://github.com/advikmaniar/ML-Healthcare-Web-App",
+  },
+  {
+    date: "December 2022",
+    name: "Report Generator Tool",
+    affiliation: "ETIC / NASA",
+    textSecondary: "Data Analysis tool & PDF Generator for time-series data",
+    description: [
+      "Developed prototype data tools at the Entrepreneurship and Technology Innovation Center under NASA contract.",
+      "Real-time data reader that analyzes, visualizes, and generates a PDF report on provided data.",
+      "Forecasted weather metrics for the next 2 weeks with 84% testing accuracy.",
+    ],
+    tools: ["Python", "Sklearn", "Pandas", "Scipy", "Plotly"],
+    images: [
+      "/DataReaderImages/DataReader_Image1.png",
+      "/DataReaderImages/DataReader_Image2.png",
+      "/DataReaderImages/DataReader_Image3.png",
+    ],
+    github: "https://github.com/advikmaniar/Data-Analysis-Tool",
+  },
+  {
+    date: "October 2024",
+    name: "Anime House",
+    affiliation: "NY Institute of Tech",
+    textSecondary: "Recommendation System for Anime Lovers",
+    description: [
+      "Hybrid recommendation system using collaborative filtering algorithms.",
+      "Visualized and analyzed data with Plotly and Matplotlib.",
+      "Model trained on 20,000+ user reviews and ratings from MyAnimeList API.",
+      "Achieved 80% accuracy on the test dataset.",
+    ],
+    tools: ["Python", "Pandas", "Sklearn", "Plotly"],
+    images: [
+      "/AnimeHouseImages/AnimeHouse_Image1.png",
+      "/AnimeHouseImages/AnimeHouse_Image2.png",
+      "/AnimeHouseImages/AnimeHouse_Image3.png",
+    ],
+    github: "https://github.com/advikmaniar/interview-portal",
+  },
 ];
 
-const DataProjects = () => {
-    const [expanded, setExpanded] = useState(null);
-
-    const handleExpandClick = (row, index) => {
-        setExpanded(expanded === `${row}-${index}` ? null : `${row}-${index}`);
-    };
-
-    const [likes, setLikes] = useState(Array(dataProjects.length).fill(0));
-    const [expandedImageIndex, setExpandedImageIndex] = useState(0);
-
-    const handleLikeClick = (index) => {
-        const newLikes = [...likes];
-        newLikes[index] += 1;
-        setLikes(newLikes);
-
-    };
-
-    return (
-        <Container
+function ProjectCard({ project, onClick }) {
+  return (
+    <Box
+      onClick={onClick}
+      sx={{
+        bgcolor: "background.paper",
+        border: "1px solid",
+        borderColor: "divider",
+        borderRadius: "20px",
+        overflow: "hidden",
+        cursor: "pointer",
+        transition: "all 0.3s ease",
+        display: "flex",
+        flexDirection: "column",
+        height: "100%",
+        "&:hover": {
+          borderColor: "rgba(99,102,241,0.4)",
+          boxShadow: "0 8px 32px rgba(99,102,241,0.15)",
+          transform: "translateY(-4px)",
+        },
+      }}
+    >
+      <Box sx={{ position: "relative", height: 200, overflow: "hidden", bgcolor: "action.hover" }}>
+        <Box
+          component="img"
+          src={project.images[0]}
+          alt={project.name}
+          sx={{ width: "100%", height: "100%", objectFit: "cover", transition: "transform 0.4s ease" }}
+        />
+        <Box
+          sx={{
+            position: "absolute",
+            inset: 0,
+            background: "linear-gradient(to bottom, transparent 40%, rgba(0,0,0,0.5) 100%)",
+          }}
+        />
+        <Chip
+          label={project.date}
+          size="small"
+          sx={{
+            position: "absolute",
+            top: 12,
+            right: 12,
+            bgcolor: "rgba(0,0,0,0.6)",
+            color: "#fff",
+            fontSize: "0.7rem",
+            fontWeight: 600,
+            backdropFilter: "blur(8px)",
+            border: "1px solid rgba(255,255,255,0.15)",
+          }}
+        />
+        {project.affiliation && (
+          <Chip
+            label={project.affiliation}
+            size="small"
             sx={{
-                display: 'flex',
-                flexDirection: 'column',
-                flexWrap: 'wrap',
-                backgroundColor: 'background.paper',
-                opacity: 0.9,
-                padding: '10px',
-                borderRadius: '10px',
-                boxShadow: 3,
-                alignItems: 'left',
+              position: "absolute",
+              bottom: 12,
+              left: 12,
+              bgcolor: "rgba(6,182,212,0.75)",
+              color: "#fff",
+              fontSize: "0.7rem",
+              fontWeight: 600,
+              backdropFilter: "blur(8px)",
             }}
-        >
-            <Typography variant="h6" component="div"
-                sx={{
-                    mb: 1,
-                    color: 'text.secondary',
-                    backgroundColor: 'background.paper',
-                    fontWeight: 'bold',
-                    textAlign: 'left',
-                    width: 'fit-content',
-                    borderRadius: '10px',
-                    p: '5px',
-                    fontFamily: 'Cursive',
-                    justifyContent: 'center',
-                }}
-            >
-                <Typography variant="h6" color="text.primary"
-                    sx={{
-                        textAlign: 'center',
-                        fontFamily: 'Cursive',
-                    }}>
-                    "In God we trust. All others must bring data📊" - Data is the currency of trust. Data is the new oil.
-                </Typography>
-                <Typography variant="h6" color="text.secondary"
-                    sx={{
-                        mt: 1,
-                        color: 'text.secondary',
-                        backgroundColor: 'background.paper',
-                        fontWeight: 'bold',
-                        textAlign: 'left',
-                        width: 'fit-content',
-                        borderRadius: '10px',
-                        p: '5px',
-                        fontFamily: 'Cursive',
-                        justifyContent: 'center',
-                    }}>
-                    Some of my data fueled projects:
-                </Typography>
-                -&gt; Powerful Machine Learning algorithms to build forecasting models, and intuitive dashboards with{' '}
-                <a href="https://streamlit.io" target="_blank" rel="noopener noreferrer">
-                    StreamLit<SiStreamlit style={{ marginLeft: "2px", color: "#FF4B4B", fontSize: "2rem", verticalAlign: "bottom" }} />
-                </a>
-                <br />
-                -&gt; Visualized data to analyze, generate insights and make data-driven decisions with{' '}
-                <a href="https://plotly.com" target="_blank" rel="noopener noreferrer">
-                    Plotly<SiPlotly style={{ marginLeft: "2px", color: "#119DFF", fontSize: "2rem", verticalAlign: "bottom" }} />
-                </a>
-                {' '} and {' '}
-                <a href="https://tableau.com" target="_blank" rel="noopener noreferrer">
-                    Tableau<SiTableau style={{ marginLeft: "2px", color: "#119DFF", fontSize: "2rem", verticalAlign: "bottom" }} />
-                </a>
-                <br />
-                -&gt; Developed Recommendation Systems with Natural Language Processing tools and deep learning frameworks.
-            </Typography>
-            <Box
-                sx={{
+          />
+        )}
+      </Box>
+
+      <Box sx={{ p: 2.5, display: "flex", flexDirection: "column", flex: 1 }}>
+        <Typography variant="h6" sx={{ fontWeight: 800, fontSize: "1.05rem", mb: 0.5, letterSpacing: "-0.01em" }}>
+          {project.name}
+        </Typography>
+        <Typography variant="body2" color="text.secondary" sx={{ fontSize: "0.83rem", mb: 2, lineHeight: 1.5 }}>
+          {project.textSecondary}
+        </Typography>
+        <Box sx={{ display: "flex", gap: 1, flexWrap: "wrap", mt: "auto" }}>
+          {project.tools.slice(0, 5).map((tool) =>
+            toolIcons[tool] ? (
+              <Tooltip title={tool} key={tool} arrow>
+                <Box
+                  sx={{
                     display: "flex",
-                    flexDirection: "column",
-                    width: "100%",
-                }}
-            >
-                {[0, 1].map((row) => (
-                    <Box
-                        key={row}
-                        display="flex"
-                        flexDirection={{ xs: 'column', sm: 'row' }}
-                        width="100%"
-                    >
-                        {dataProjects.slice(row * 2, row * 2 + 2).map((project, index) => (
-                            <Box key={index}
-                                sx={{
-                                    height: expanded === `${row}-${index}` ? '65vh' : expanded ? "50px" : "350px",
-                                    width: expanded === `${row}-${index}` ? '100vh' : expanded ? "50px" : "100%",
-                                    transition: 'all 0.3s ease',
-                                    margin: '10px',
-                                    position: 'relative',
-                                    '&:hover::after': {
-                                        content: expanded === `${row}-${index}` ? '""' : `"${project.name}"`,
-                                        position: 'absolute',
-                                        padding: '2px',
-                                        borderRadius: '10px',
-                                        zIndex: 1,
-                                    },
-                                }}
-                                onClick={() => handleExpandClick(row, index)}
-                            >
-                                <Card
-                                    sx={{
-                                        p: 0,
-                                        m: 0,
-                                        height: '100%',
-                                        display: 'flex',
-                                        flexDirection: 'column',
-                                        borderRadius: '10px',
-                                        justifyContent: 'left',
-                                        alignItems: 'left',
-                                        transition: 'all 0.3s ease',
-                                        backgroundColor: 'background.paper',
-                                        '&:hover': expanded === `${row}-${index}` ? {} : {
-                                            boxShadow: 3,
-                                            transform: "scale(1.01)",
-                                            cursor: 'pointer',
-                                            opacity: 0.8,
-                                        },
-                                    }}
-                                >
-                                    <Box sx={{ position: 'relative', height: expanded === `${row}-${index}` ? '60%' : '60%', width: '100%' }}>
-                                        {expanded === `${row}-${index}` && (
-                                            <>
-                                                <IconButton
-                                                    sx={{ position: 'absolute', top: '50%', left: 0, zIndex: 2, border: '0px', }}
-                                                    onClick={(e) => {
-                                                        e.stopPropagation();
-                                                        setExpandedImageIndex((prev) => (prev === 0 ? project.images.length - 1 : prev - 1));
-                                                    }}
-                                                >
-                                                    &lt;
-                                                </IconButton>
-                                                <IconButton
-                                                    sx={{ position: 'absolute', top: '50%', right: 0, zIndex: 2, border: '0px', }}
-                                                    onClick={(e) => {
-                                                        e.stopPropagation();
-                                                        setExpandedImageIndex((prev) => (prev === project.images.length - 1 ? 0 : prev + 1));
-                                                    }}
-                                                >
-                                                    &gt;
-                                                </IconButton>
-                                                <IconButton
-                                                    sx={{
-                                                        position: 'absolute',
-                                                        top: 0,
-                                                        right: 0,
-                                                        borderRadius: '10px',
-                                                        border: '0px',
-                                                        zIndex: 2
-                                                    }}
-                                                    onClick={(e) => {
-                                                        e.stopPropagation();
-                                                        setExpanded(null);
-                                                    }}
-                                                >
-                                                    <IoIosClose />
-                                                </IconButton>
-                                            </>
-                                        )}
-                                        <CardMedia
-                                            component="img"
-                                            image={project.images[expanded === `${row}-${index}` ? expandedImageIndex : 0]}
-                                            alt={`${project.name} image ${expanded === `${row}-${index}` ? expandedImageIndex + 1 : 1}`}
-                                            sx={{
-                                                height: '100%',
-                                                width: '100%',
-                                                objectFit: expanded === `${row}-${index}` ? "contain" : "fit",
-                                                borderRadius: '10px 10px 0px 0px'
-                                            }}
-                                        />
-                                    </Box>
-                                    <CardContent
-                                        sx={{
-                                            flexGrow: 1,
-                                            display: 'flex',
-                                            flexDirection: 'column',
-                                            justifyContent: 'left',
-                                            alignItems: 'left',
-                                            height: expanded === `${row}-${index}` ? '50%' : '40%',
-                                        }}
-                                    >
-                                        <Box sx={{
-                                            flexGrow: 1,
-                                            display: 'flex',
-                                            flexDirection: 'column',
-                                        }}>
-                                            <Container
-                                                sx={{
-                                                    display: 'flex',
-                                                    flexDirection: 'row',
-                                                    justifyContent: 'space-between',
-                                                    alignItems: 'center',
-                                                }}>
-                                                <Box>
-                                                    <Typography variant="h5" component="div"
-                                                        sx={{
-                                                            color: 'text.primary',
-                                                            fontWeight: 'bold',
-                                                            display: 'flex',
-                                                            alignItems: 'center',
-                                                            flexDirection: 'row',
-                                                            gap: '22px',
-                                                        }}
-                                                    >
-                                                        {project.name}
-                                                        {project.affiliation !== 'Self' && (
-                                                            <Box sx={{
-                                                                display: 'flex',
-                                                                alignContent: 'center',
-                                                                backgroundColor: '#4086f4', 
-                                                                borderRadius: '20px',
-                                                                px: '5px',
-                                                                py: '2px',
-                                                                boxShadow: 3,
-                                                            }}>
-                                                                <Typography variant="body2" color="black">
-                                                                    {project.affiliation}
-                                                                </Typography>
-                                                            </Box>
-                                                        )}
-                                                    </Typography>
-                                                    <Typography variant="body2" color="text.secondary">
-                                                        {project.textSecondary}
-                                                    </Typography>
-                                                </Box>
+                    alignItems: "center",
+                    transition: "transform 0.2s ease",
+                    "&:hover": { transform: "scale(1.2)" },
+                  }}
+                >
+                  {toolIcons[tool]}
+                </Box>
+              </Tooltip>
+            ) : null
+          )}
+        </Box>
+      </Box>
+    </Box>
+  );
+}
 
-                                                <Box
-                                                    sx={{
-                                                        display: 'flex',
-                                                        alignItems: 'center',
-                                                    }}
-                                                >
-                                                    <StyledIconsPortfolio
-                                                        color="github"
-                                                        bgColor="#333"
-                                                        hoverColor="#444"
-                                                        icon={<GitHub fontSize="medium" />}
-                                                        url={project.github}
-                                                    />
-                                                </Box>
-                                            </Container>
-                                            <Divider sx={{ my: 1 }} />
-                                            <Box
-                                                sx={{
-                                                    display: 'flex',
-                                                    justifyContent: 'center',
-                                                    mt: 0
-                                                }}
-                                            >
-                                                <Box
-                                                    sx={{
-                                                        display: 'flex',
-                                                        flexDirection: 'row',
-                                                        justifyContent: 'center',
-                                                        alignItems: 'center',
-                                                        height: 'fit-content',
-                                                        flexWrap: 'wrap',
-                                                    }}>
-                                                    {project.tools.slice(0, expanded === `${row}-${index}` ? project.tools.length : 4).map((tool, i) => {
-                                                        const icons = {
-                                                            'Python': <FaPython style={{ marginRight: "6px", color: "#306998", fontSize: "2.5rem" }} />,
-                                                            'MongoDB': <SiMongodb style={{ marginRight: "6px", color: "#3FA037", fontSize: "1.5rem" }} />,
-                                                            'TensorFlow': <SiTensorflow style={{ marginRight: "8px", color: "#FFA101", fontSize: "2.5rem" }} />,
-                                                            'Pandas': <SiPandas style={{ marginRight: "8px", color: "#130751", fontSize: "2.5rem" }} />,
-                                                            'Numpy': <SiNumpy style={{ marginRight: "8px", color: "#4D76CE", fontSize: "2.5rem" }} />,
-                                                            'MySQL': <SiMysql style={{ marginRight: "6px", color: "#61DBFB", fontSize: "2.5rem" }} />,
-                                                            'StreamLit': <SiStreamlit style={{ marginRight: "6px", color: "#FF4B4B", fontSize: "2.5rem" }} />,
-                                                            'Sklearn': <SiScikitlearn style={{ marginRight: "8px", color: "#F79939", fontSize: "2.5rem" }} />,
-                                                            'Plotly': <SiPlotly style={{ marginRight: "8px", color: "#119DFF", fontSize: "2.5rem" }} />,
-                                                            'Scipy': <SiScipy style={{ marginRight: "8px", color: "#0D56A5", fontSize: "2.5rem" }} />,
-                                                        };
-                                                        return (
-                                                            <Tooltip title={tool} key={i}>
-                                                                <Box
-                                                                    sx={{
-                                                                        m: 1,
-                                                                        '&:hover': {
-                                                                            transform: 'scale(1.2)',
-                                                                            transition: 'transform 0.2s ease-in-out'
-                                                                        }
-                                                                    }}
-                                                                >
-                                                                    {icons[tool]}
-                                                                </Box>
-                                                            </Tooltip>
-                                                        );
-                                                    })}
-                                                </Box>
-                                                {expanded === `${row}-${index}` && (
-                                                    <Box
-                                                        sx={{
-                                                            display: 'flex',
-                                                            flexDirection: 'column',
-                                                            justifyContent: 'left',
-                                                            alignItems: 'left',
-                                                            backgroundColor: 'background.default',
-                                                            borderRadius: '10px',
-                                                            padding: '10px',
-                                                        }}>
+function ProjectModal({ project, open, onClose }) {
+  const [imgIndex, setImgIndex] = useState(0);
 
-                                                        {project.description.map((desc, i) => (
-                                                            <Typography key={i} variant="body2" color="text.secondary"
-                                                                sx={{
-                                                                    fontSize: '1rem',
-                                                                }}>
-                                                                <li>{desc}</li>
-                                                            </Typography>
-                                                        ))}
-                                                    </Box>
-                                                )}
-                                            </Box>
-                                        </Box>
-                                    </CardContent>
-                                </Card>
-                            </Box>
-                        ))}
-                    </Box>
-                ))}
-            </Box>
-            <Divider sx={{ mt: 1 }} />
-            <Typography variant="h6" color="text.secondary"
+  React.useEffect(() => {
+    if (open) setImgIndex(0);
+  }, [open, project]);
+
+  if (!project) return null;
+
+  return (
+    <Dialog
+      open={open}
+      onClose={onClose}
+      maxWidth="md"
+      fullWidth
+      PaperProps={{
+        sx: {
+          borderRadius: "20px",
+          border: "1px solid",
+          borderColor: "divider",
+          overflow: "hidden",
+          bgcolor: "background.paper",
+        },
+      }}
+    >
+      <Box sx={{ height: 4, background: "linear-gradient(135deg, #6366f1, #06b6d4)" }} />
+      <DialogContent sx={{ p: 0 }}>
+        <Box sx={{ position: "relative", height: { xs: 220, sm: 320 }, bgcolor: "action.hover" }}>
+          <Box
+            component="img"
+            src={project.images[imgIndex]}
+            alt={`${project.name} screenshot ${imgIndex + 1}`}
+            sx={{ width: "100%", height: "100%", objectFit: "contain" }}
+          />
+          {project.images.length > 1 && (
+            <>
+              <IconButton
+                onClick={() => setImgIndex((p) => (p === 0 ? project.images.length - 1 : p - 1))}
                 sx={{
-                    mt: 1,
-                    color: 'text.secondary',
-                    backgroundColor: 'background.paper',
-                    fontWeight: 'bold',
-                    textAlign: 'left',
-                    width: 'fit-content',
-                    borderRadius: '10px',
-                    p: '5px',
-                    fontFamily: 'Cursive',
-                    justifyContent: 'center',
-                }}>
-                I am a <span style={{ backgroundColor: '#651efe', color: "white", borderRadius: 5, padding: "2px", boxShadow: 3 }}> Notebooks Expert</span> on Kaggle. To view more data intensive projects visit my Profile -&gt; {' '}
-                <StyledIconsPortfolio
-                    color="kaggle"
-                    bgColor="#1da1f2"
-                    hoverColor="#1991c6"
-                    icon={<FaKaggle fontSize="medium" />}
-                    url="https://www.kaggle.com/advikmaniar/code"
+                  position: "absolute",
+                  left: 8,
+                  top: "50%",
+                  transform: "translateY(-50%)",
+                  bgcolor: "rgba(0,0,0,0.45)",
+                  color: "#fff",
+                  backdropFilter: "blur(4px)",
+                  "&:hover": { bgcolor: "rgba(0,0,0,0.65)" },
+                }}
+              >
+                <ChevronLeft />
+              </IconButton>
+              <IconButton
+                onClick={() => setImgIndex((p) => (p === project.images.length - 1 ? 0 : p + 1))}
+                sx={{
+                  position: "absolute",
+                  right: 8,
+                  top: "50%",
+                  transform: "translateY(-50%)",
+                  bgcolor: "rgba(0,0,0,0.45)",
+                  color: "#fff",
+                  backdropFilter: "blur(4px)",
+                  "&:hover": { bgcolor: "rgba(0,0,0,0.65)" },
+                }}
+              >
+                <ChevronRight />
+              </IconButton>
+              <Box
+                sx={{
+                  position: "absolute",
+                  bottom: 10,
+                  left: "50%",
+                  transform: "translateX(-50%)",
+                  display: "flex",
+                  gap: 0.8,
+                }}
+              >
+                {project.images.map((_, i) => (
+                  <Box
+                    key={i}
+                    onClick={() => setImgIndex(i)}
+                    sx={{
+                      width: i === imgIndex ? 18 : 6,
+                      height: 6,
+                      borderRadius: "3px",
+                      bgcolor: i === imgIndex ? "#06b6d4" : "rgba(255,255,255,0.5)",
+                      cursor: "pointer",
+                      transition: "all 0.25s ease",
+                    }}
+                  />
+                ))}
+              </Box>
+            </>
+          )}
+          <IconButton
+            onClick={onClose}
+            sx={{
+              position: "absolute",
+              top: 8,
+              right: 8,
+              bgcolor: "rgba(0,0,0,0.5)",
+              color: "#fff",
+              backdropFilter: "blur(4px)",
+              "&:hover": { bgcolor: "rgba(0,0,0,0.7)" },
+            }}
+          >
+            <Close />
+          </IconButton>
+        </Box>
+
+        <Box sx={{ p: { xs: 2.5, sm: 3.5 } }}>
+          <Box sx={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", mb: 1 }}>
+            <Box>
+              <Box sx={{ display: "flex", alignItems: "center", gap: 1.5, mb: 0.5 }}>
+                <Typography variant="h5" sx={{ fontWeight: 800, letterSpacing: "-0.02em" }}>
+                  {project.name}
+                </Typography>
+                {project.affiliation && (
+                  <Chip
+                    label={project.affiliation}
+                    size="small"
+                    sx={{ bgcolor: "rgba(6,182,212,0.12)", color: "#06b6d4", fontWeight: 600 }}
+                  />
+                )}
+              </Box>
+              <Typography variant="body2" color="text.secondary">
+                {project.textSecondary} · {project.date}
+              </Typography>
+            </Box>
+            <Box sx={{ display: "flex", alignItems: "center", gap: 1, flexShrink: 0 }}>
+              <LikeButton projectName={project.name} />
+              <IconButton
+                component="a"
+                href={project.github}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={(e) => e.stopPropagation()}
+                sx={{
+                  bgcolor: "#24292e",
+                  color: "#fff",
+                  borderRadius: "10px",
+                  p: 0.8,
+                  "&:hover": { bgcolor: "#444", transform: "scale(1.05)" },
+                  transition: "all 0.2s ease",
+                }}
+              >
+                <GitHub fontSize="small" />
+              </IconButton>
+            </Box>
+          </Box>
+
+          <Divider sx={{ my: 2 }} />
+
+          <Box sx={{ mb: 2.5 }}>
+            {project.description.map((point, i) => (
+              <Box key={i} sx={{ display: "flex", gap: 1.5, mb: 1 }}>
+                <Box
+                  sx={{
+                    mt: 0.6,
+                    width: 6,
+                    height: 6,
+                    borderRadius: "50%",
+                    flexShrink: 0,
+                    background: "linear-gradient(135deg, #6366f1, #06b6d4)",
+                  }}
                 />
-            </Typography>
-        </Container>
-    );
+                <Typography variant="body2" color="text.secondary" sx={{ lineHeight: 1.65 }}>
+                  {point}
+                </Typography>
+              </Box>
+            ))}
+          </Box>
+
+          <Typography variant="overline" sx={{ color: "#06b6d4", fontWeight: 700, letterSpacing: "0.12em", fontSize: "0.7rem" }}>
+            Tech Stack
+          </Typography>
+          <Box sx={{ display: "flex", gap: 1.5, flexWrap: "wrap", mt: 1 }}>
+            {project.tools.map((tool) => (
+              <Box
+                key={tool}
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 0.8,
+                  px: 1.5,
+                  py: 0.6,
+                  bgcolor: "action.hover",
+                  border: "1px solid",
+                  borderColor: "divider",
+                  borderRadius: "10px",
+                  fontSize: "0.8rem",
+                  fontWeight: 600,
+                  color: "text.secondary",
+                  transition: "all 0.2s ease",
+                  "&:hover": { borderColor: "rgba(6,182,212,0.4)", color: "#06b6d4" },
+                }}
+              >
+                {toolIcons[tool] && <Box sx={{ display: "flex", fontSize: "1rem" }}>{toolIcons[tool]}</Box>}
+                {tool}
+              </Box>
+            ))}
+          </Box>
+        </Box>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+const DataProjects = () => {
+  const [selectedProject, setSelectedProject] = useState(null);
+
+  return (
+    <>
+      {/* Data quote */}
+      <Box
+        sx={{
+          mb: 3,
+          p: 2.5,
+          bgcolor: "rgba(6,182,212,0.06)",
+          border: "1px solid rgba(6,182,212,0.2)",
+          borderRadius: "14px",
+          borderLeft: "3px solid #06b6d4",
+        }}
+      >
+        <Typography
+          variant="body2"
+          sx={{ fontStyle: "italic", color: "text.secondary", fontSize: "0.9rem", lineHeight: 1.65 }}
+        >
+          "In God we trust. All others must bring data 📊" — Powerful ML algorithms, intuitive dashboards, and data-driven insights.
+        </Typography>
+      </Box>
+
+      <Box
+        sx={{
+          display: "grid",
+          gridTemplateColumns: { xs: "1fr", sm: "1fr 1fr" },
+          gap: 3,
+          mb: 4,
+        }}
+      >
+        {dataProjects.map((project) => (
+          <ProjectCard
+            key={project.name}
+            project={project}
+            onClick={() => setSelectedProject(project)}
+          />
+        ))}
+      </Box>
+
+      {/* Footer note */}
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          gap: 1.5,
+          p: 2,
+          bgcolor: "action.hover",
+          borderRadius: "14px",
+          border: "1px solid",
+          borderColor: "divider",
+        }}
+      >
+        <Box>
+          <Typography variant="body2" color="text.secondary" sx={{ fontSize: "0.85rem" }}>
+            I'm a{" "}
+            <Box
+              component="span"
+              sx={{
+                background: "linear-gradient(135deg, #6366f1, #06b6d4)",
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+                backgroundClip: "text",
+                fontWeight: 700,
+              }}
+            >
+              Notebooks Expert
+            </Box>{" "}
+            on Kaggle · More data projects on my profile
+          </Typography>
+        </Box>
+        <IconButton
+          component="a"
+          href="https://www.kaggle.com/advikmaniar/code"
+          target="_blank"
+          rel="noopener noreferrer"
+          size="small"
+          sx={{
+            bgcolor: "#1da1f2",
+            color: "#fff",
+            borderRadius: "8px",
+            p: 0.7,
+            ml: "auto",
+            flexShrink: 0,
+            "&:hover": { bgcolor: "#0d8bd1" },
+          }}
+        >
+          <FaKaggle size={16} />
+        </IconButton>
+      </Box>
+
+      <ProjectModal
+        project={selectedProject}
+        open={!!selectedProject}
+        onClose={() => setSelectedProject(null)}
+      />
+    </>
+  );
 };
 
 export default DataProjects;

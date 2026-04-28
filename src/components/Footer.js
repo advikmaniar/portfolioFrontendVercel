@@ -1,195 +1,199 @@
 import React, { useState } from "react";
-import Box from "@mui/material/Box"
-import Button from "@mui/material/Button"
-import Container from "@mui/material/Container"
-import Divider from "@mui/material/Divider"
-// import Link from "@mui/material/Link"
-import Stack from "@mui/material/Stack"
-import TextField from "@mui/material/TextField"
-import Typography from "@mui/material/Typography"
-import NameLogo from "./NameLogo"
-import { StyledIcons } from "../utils/utils"
-import { LinkedIn, GitHub, Instagram } from '@mui/icons-material';
+import { Box, Container, Typography, Button, IconButton, Stack, Divider } from "@mui/material";
+import { LinkedIn, GitHub, Instagram } from "@mui/icons-material";
 import { FaKaggle } from "react-icons/fa";
-import SkillsSidebar from "../skillsPage/SkillsSidebar";
-import ContactPopup from './ContactPopup';
 import { Link } from "react-router-dom";
+import SkillsSidebar from "../skillsPage/SkillsSidebar";
+import ContactPopup from "./ContactPopup";
 
-function Copyright() {
-  return (
-    <Typography variant="body2" sx={{ color: "text.secondary", mt: 1 }}>
-      {"Copyright © "}
-      <Link color="text.secondary" href="/home">
-        Advik Maniar
-      </Link>
-      &nbsp;
-      {new Date().getFullYear()}
-    </Typography>
-  )
-}
+const socialLinks = [
+  {
+    label: "LinkedIn",
+    icon: <LinkedIn sx={{ fontSize: 18 }} />,
+    url: "https://www.linkedin.com/in/advikmaniar/",
+    color: "#0077b5",
+  },
+  {
+    label: "GitHub",
+    icon: <GitHub sx={{ fontSize: 18 }} />,
+    url: "https://github.com/advikmaniar",
+    color: "#6e5494",
+  },
+  {
+    label: "Kaggle",
+    icon: <FaKaggle size={16} />,
+    url: "https://www.kaggle.com/advikmaniar",
+    color: "#1da1f2",
+  },
+  {
+    label: "Instagram",
+    icon: <Instagram sx={{ fontSize: 18 }} />,
+    url: "https://www.instagram.com/advik0220/",
+    color: "#e4405f",
+  },
+];
+
+const navLinks = [
+  { label: "Home", path: "/home" },
+  { label: "About", path: "/about" },
+  { label: "Projects", path: "/projects" },
+];
 
 export default function Footer() {
-  const [contactModalOpen, setContactModalOpen] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
-
-  const toggleSidebar = () => {
-    setSidebarOpen((prev) => !prev);
-  }
-
-  const handleContactModal = () => {
-    setContactModalOpen((prev) => !prev);
-  };
+  const [contactOpen, setContactOpen] = useState(false);
 
   return (
-    <React.Fragment>
-      <Divider />
-      <Container
+    <>
+      <Box
+        component="footer"
         sx={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          gap: { xs: 1, sm: 2 },
-          py: { xs: 1, sm: 2 },
-          textAlign: { sm: "center", md: "left" }
+          borderTop: "1px solid",
+          borderColor: "divider",
+          py: 4,
+          mt: 4,
         }}
       >
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: { xs: "column", sm: "row" },
-            width: "100%",
-            borderRadius: "20px",
-            padding: 2,
-            justifyContent: "space-between",
-            backgroundColor: 'background.paper',
-          }}
-        >
+        <Container maxWidth="lg">
+          {/* Main footer row */}
           <Box
             sx={{
               display: "flex",
-              flexDirection: "column",
-              gap: 4,
-              minWidth: { xs: "100%", sm: "60%" }
+              flexDirection: { xs: "column", sm: "row" },
+              alignItems: { xs: "center", sm: "center" },
+              justifyContent: "space-between",
+              gap: 3,
+              mb: 3,
             }}
           >
-            <Box sx={{ width: { xs: "100%", sm: "60%" } }}>
-              <NameLogo />
-              {/* <Typography
-                variant="body2"
-                gutterBottom
-                sx={{ fontWeight: 600, mt: 2 }}
+            {/* Brand */}
+            <Box sx={{ textAlign: { xs: "center", sm: "left" } }}>
+              <Typography
+                variant="h6"
+                sx={{
+                  fontWeight: 800,
+                  fontSize: "1.1rem",
+                  background: "linear-gradient(135deg, #6366f1, #06b6d4)",
+                  WebkitBackgroundClip: "text",
+                  WebkitTextFillColor: "transparent",
+                  backgroundClip: "text",
+                  letterSpacing: "-0.02em",
+                }}
               >
-                Let's get in touch!
+                Advik Maniar
               </Typography>
-              <Stack direction="row" spacing={1} useFlexGap>
-                <Button
-                  onClick={handleContactModal}
-                  variant="contained"
-                  color="primary"
-                  size="small"
-                  sx={{ flexShrink: 0 }}
-                >
-                  Connect
-                </Button>
-              </Stack> */}
+              <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5, fontSize: "0.8rem" }}>
+                Software Developer · New York, NY
+              </Typography>
             </Box>
+
+            {/* Nav links */}
+            <Box
+              sx={{
+                display: "flex",
+                flexWrap: "wrap",
+                gap: 0.5,
+                justifyContent: "center",
+              }}
+            >
+              {navLinks.map(({ label, path }) => (
+                <Button
+                  key={path}
+                  component={Link}
+                  to={path}
+                  size="small"
+                  sx={{
+                    color: "text.secondary",
+                    fontSize: "0.8rem",
+                    textTransform: "none",
+                    borderRadius: "8px",
+                    px: 1.5,
+                    "&:hover": { color: "primary.main", background: "rgba(99,102,241,0.08)" },
+                  }}
+                >
+                  {label}
+                </Button>
+              ))}
+              <Button
+                size="small"
+                onClick={() => setSidebarOpen(true)}
+                sx={{
+                  color: "text.secondary",
+                  fontSize: "0.8rem",
+                  textTransform: "none",
+                  borderRadius: "8px",
+                  px: 1.5,
+                  "&:hover": { color: "primary.main", background: "rgba(99,102,241,0.08)" },
+                }}
+              >
+                Skills
+              </Button>
+              <Button
+                size="small"
+                onClick={() => setContactOpen(true)}
+                sx={{
+                  color: "text.secondary",
+                  fontSize: "0.8rem",
+                  textTransform: "none",
+                  borderRadius: "8px",
+                  px: 1.5,
+                  "&:hover": { color: "primary.main", background: "rgba(99,102,241,0.08)" },
+                }}
+              >
+                Contact
+              </Button>
+            </Box>
+
+            {/* Social icons */}
+            <Stack direction="row" spacing={1}>
+              {socialLinks.map(({ label, icon, url, color }) => (
+                <IconButton
+                  key={label}
+                  component="a"
+                  href={url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  size="small"
+                  aria-label={label}
+                  sx={{
+                    border: "1px solid",
+                    borderColor: "divider",
+                    borderRadius: "10px",
+                    color: "text.secondary",
+                    transition: "all 0.2s ease",
+                    "&:hover": {
+                      borderColor: color,
+                      color: color,
+                      background: `${color}15`,
+                      transform: "translateY(-2px)",
+                    },
+                  }}
+                >
+                  {icon}
+                </IconButton>
+              ))}
+            </Stack>
           </Box>
+
+          <Divider />
+
+          {/* Copyright */}
           <Box
             sx={{
-              backgroundColor: "transparent",
+              pt: 2,
               display: "flex",
-              alignItems: "center",
               justifyContent: "center",
-              flexGrow: 1,
             }}
           >
-            <Button
-              variant="text"
-              color="info"
-              size="small"
-              component={Link}
-              to="/home"
-            >
-              HOME
-            </Button>
-            <Button
-              variant="text"
-              color="info"
-              size="small"
-              component={Link}
-              to="/about"
-            >
-              ABOUT
-            </Button>
-            <Button
-              variant="text"
-              color="info"
-              size="small"
-              component={Link}
-              to="/projects"
-            >
-              MY WORK
-            </Button>
-            <Button variant="text" color="info" size="small" onClick={toggleSidebar}>
-              SKILLS
-            </Button>
-            <Button variant="text" color="info" size="small" onClick={handleContactModal}>
-              CONTACT
-            </Button>
+            <Typography variant="body2" color="text.secondary" sx={{ fontSize: "0.78rem" }}>
+              © {new Date().getFullYear()} Advik Maniar · Built with React.js
+            </Typography>
           </Box>
-        </Box>
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "space-between",
-            pt: { xs: 1, sm: 2 },
-            width: "100%",
-            borderTop: "1px solid",
-            borderColor: "divider"
-          }}
-        >
-          <div>
-            <Copyright />
-          </div>
-          <Stack
-            direction="row"
-            spacing={1}
-            useFlexGap
-            sx={{ justifyContent: "left", color: "text.secondary" }}
-          >
-            <StyledIcons
-              color="linkedin"
-              bgColor="#0077b5"
-              hoverColor="#005c8a"
-              icon={<LinkedIn fontSize="medium" />}
-              url="https://www.linkedin.com/in/advikmaniar/"
-            />
-            <StyledIcons
-              color="github"
-              bgColor="#333"
-              hoverColor="#444"
-              icon={<GitHub fontSize="medium" />}
-              url="https://github.com/advikmaniar"
-            />
-            <StyledIcons
-              color="kaggle"
-              bgColor="#1da1f2"
-              hoverColor="#1991c6"
-              icon={<FaKaggle fontSize="medium" />}
-              url="https://www.kaggle.com/advikmaniar"
-            />
-            <StyledIcons
-              color="instagram"
-              bgColor="#e4405f"
-              hoverColor="#b32f46"
-              icon={<Instagram fontSize="medium" />}
-              url="https://www.instagram.com/advik0220/"
-            />
-          </Stack>
-        </Box>
-      </Container>
-      <SkillsSidebar open={sidebarOpen} onClose={toggleSidebar} />
-      <ContactPopup open={contactModalOpen} onClose={handleContactModal} />
-    </React.Fragment>
-  )
+        </Container>
+      </Box>
+
+      <SkillsSidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} />
+      <ContactPopup open={contactOpen} onClose={() => setContactOpen(false)} />
+    </>
+  );
 }

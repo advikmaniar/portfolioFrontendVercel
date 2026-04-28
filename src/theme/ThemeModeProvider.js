@@ -32,7 +32,7 @@ export const ThemeModeProvider = ({ children }) => {
   const toggleTheme = () => {
     setMode(prevMode => {
       const newMode = prevMode === "dark" ? "light" : "dark";
-      console.log("Toggling theme to:", newMode); // Debug line to check mode
+      console.log("Toggling theme to:", newMode); 
       return newMode;
     });
   };

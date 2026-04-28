@@ -1,77 +1,89 @@
-import * as React from "react";
-import { Box, Container } from "@mui/material";
+import React from "react";
+import { Box } from "@mui/material";
 import NameCard from "./NameCard";
 import AboutMeCard from "./AboutMeCard";
 
+export default function HomePage() {
+  return (
+    <Box
+      sx={{
+        minHeight: "calc(100vh - 80px)",
+        display: "flex",
+        alignItems: "center",
+        position: "relative",
+        overflow: "hidden",
+        px: { xs: 2, sm: 4, md: 6 },
+        py: { xs: 6, md: 4 },
+      }}
+    >
+      {/* Subtle background gradient orbs */}
+      <Box
+        sx={{
+          position: "absolute",
+          top: "10%",
+          left: "-5%",
+          width: "40vw",
+          height: "40vw",
+          maxWidth: 600,
+          maxHeight: 600,
+          borderRadius: "50%",
+          background: "radial-gradient(circle, rgba(99,102,241,0.07) 0%, transparent 70%)",
+          pointerEvents: "none",
+          zIndex: 0,
+        }}
+      />
+      <Box
+        sx={{
+          position: "absolute",
+          bottom: "5%",
+          right: "-5%",
+          width: "35vw",
+          height: "35vw",
+          maxWidth: 500,
+          maxHeight: 500,
+          borderRadius: "50%",
+          background: "radial-gradient(circle, rgba(6,182,212,0.07) 0%, transparent 70%)",
+          pointerEvents: "none",
+          zIndex: 0,
+        }}
+      />
 
-export default function MainContent() {
+      {/* Grid dot pattern */}
+      <Box
+        sx={{
+          position: "absolute",
+          inset: 0,
+          backgroundImage: (theme) =>
+            theme.palette.mode === "dark"
+              ? "radial-gradient(circle at 1px 1px, rgba(99,102,241,0.12) 1px, transparent 0)"
+              : "radial-gradient(circle at 1px 1px, rgba(99,102,241,0.08) 1px, transparent 0)",
+          backgroundSize: "36px 36px",
+          pointerEvents: "none",
+          zIndex: 0,
+        }}
+      />
 
-    const bgImages = ['/BackgroundImages/bgImage1.jpg','/BackgroundImages/bgImage2.jpg'];
-    const randomBgImage = bgImages[Math.floor(Math.random() * bgImages.length)];
-
-    return (
-        <Box
-            sx={{
-                position: "relative", 
-                display: "flex",
-                flexDirection: { xs: "column", sm: "row" },
-                justifyContent: "center", 
-                alignItems: "center", 
-                p: { xs: "30px 10px", sm: "100px 0px 100px 0px" },
-            }}
-        >
-            {/* Background Container */}
-            <Box
-                sx={{
-                    position: "absolute",
-                    width: { xs: "80%", sm: "70%" },
-                    height: "100%",
-                    backgroundImage: `url(${randomBgImage})`,
-                    backgroundSize: "60%",
-                    backgroundRepeat: "no-repeat",
-                    backgroundPosition: "center",
-                    backgroundAttachment: "fixed",
-                    borderRadius: "20%",
-                    zIndex: 0,
-                    filter: "blur(2px)",
-                }}
-            />
-            <Container
-                sx={{
-                    display: "flex",
-                    flexDirection: { xs: "column", sm: "row" },
-                    gap: { xs: 2, sm: 1 },
-                    alignItems: "center",
-                    backgroundColor:" transparent",
-                    zIndex: 1,
-                }}
-            >
-                {/* NameCard */}
-                <Box
-                    sx={{
-                        flex: { xs: 1, sm: 5 },
-                        width: "100%",
-                        position: "relative",
-                        opacity: 0.9,
-                        transition: "opacity 0.3s ease"
-                    }}
-                >
-                    <NameCard />
-                </Box>
-
-                {/* AboutMeCard */}
-                <Box
-                    sx={{
-                        flex: { xs: 1, sm: 3 },
-                        width: "100%",
-                        position: "relative",
-                        opacity: 0.9,
-                        transition: "opacity 0.3s ease"
-                    }}
-                >
-                    <AboutMeCard />
-                </Box>
-            </Container>
+      {/* Content */}
+      <Box
+        sx={{
+          position: "relative",
+          zIndex: 1,
+          width: "100%",
+          maxWidth: 1200,
+          mx: "auto",
+          display: "flex",
+          flexDirection: { xs: "column", lg: "row" },
+          alignItems: { xs: "flex-start", lg: "center" },
+          gap: { xs: 4, lg: 6 },
+        }}
+      >
+        <Box sx={{ flex: "0 0 auto", width: { xs: "100%", lg: "58%" } }}>
+          <NameCard />
         </Box>
-    );
+        <Box sx={{ flex: "0 0 auto", width: { xs: "100%", lg: "42%" } }}>
+          <AboutMeCard />
+        </Box>
+      </Box>
+    </Box>
+  );
 }

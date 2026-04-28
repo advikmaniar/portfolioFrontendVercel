@@ -1,127 +1,82 @@
-import React, { useState } from 'react';
+import React from "react";
 import {
-    Box,
-    Drawer,
-    Typography,
-    Divider,
-    IconButton,
+  Box, Drawer, Typography, Divider, IconButton,
 } from "@mui/material";
-import { Close as CloseIcon } from '@mui/icons-material';
-import { useTheme } from "@mui/material/styles";
-import AccordianWD from './AccordianWD';
-import AccordianDA from './AccordianDA';
-import AccordianSS from './AccordianSS';
+import { Close as CloseIcon } from "@mui/icons-material";
+import AccordianWD from "./AccordianWD";
+import AccordianDA from "./AccordianDA";
+import AccordianSS from "./AccordianSS";
 
 const SkillsSidebar = ({ open, onClose }) => {
+  return (
+    <Drawer
+      anchor="left"
+      open={open}
+      onClose={onClose}
+      PaperProps={{
+        sx: {
+          width: { xs: "85vw", sm: 340 },
+          bgcolor: "background.paper",
+          borderRight: "1px solid",
+          borderColor: "divider",
+          borderRadius: "0 20px 20px 0",
+          overflowY: "auto",
+          "&::-webkit-scrollbar": { width: 4 },
+          "&::-webkit-scrollbar-thumb": {
+            background: "rgba(99,102,241,0.3)",
+            borderRadius: 2,
+          },
+        },
+      }}
+    >
+      {/* Top gradient bar */}
+      <Box sx={{ height: 3, background: "linear-gradient(90deg, #6366f1, #06b6d4)", flexShrink: 0 }} />
 
-    const [expandedPanels, setExpandedPanels] = useState([
-        'panelWD1', 'panelWD2', 'panelWD3', 'panelWD4', 'panelWD5',
-        'panelDA1', 'panelDA2', 'panelDA3',
-        'panelSS1', 'panelSS2', 'panelSS3']);
-    const theme = useTheme();
-
-    const handleChange = (panel) => () => {
-        if (expandedPanels.includes(panel)) {
-            setExpandedPanels(expandedPanels.filter(p => p !== panel));
-        } else {
-            setExpandedPanels([...expandedPanels, panel]);
-        }
-    };
-
-    return (
-        <Drawer
-            anchor="left"
-            open={open}
-            onClose={onClose}
-            PaperProps={{
-                sx: {
-                    width: 300,
-                    opacity: 1,
-                    boxShadow: 5,
-                    borderRadius: "0px 20px 20px 0px",
-                    transition: "opacity 0.3s ease",
-                    backgroundColor: "background.paper",
-                    p: 1,
-                    overflowY: "auto",
-                    "&::-webkit-scrollbar": {
-                        width: "2px",
-                    },
-                    "&::-webkit-scrollbar-thumb": {
-                        backgroundColor: "rgba(0, 0, 0, 0.5)",
-                        borderRadius: "10px",
-                    },
-                    "&::-webkit-scrollbar-thumb:hover": {
-                        backgroundColor: "rgba(0, 0, 0, 0.8)",
-                    },
-                    "&::-webkit-scrollbar-track": {
-                        backgroundColor: "transparent",
-                    },
-                },
-            }}
+      {/* Header */}
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          p: 2.5,
+          pb: 1.5,
+          flexShrink: 0,
+        }}
+      >
+        <Box>
+          <Typography
+            variant="overline"
+            sx={{ color: "#6366f1", fontWeight: 700, letterSpacing: "0.12em", fontSize: "0.68rem", display: "block", lineHeight: 1 }}
+          >
+            Tech Skills
+          </Typography>
+          <Typography variant="h6" sx={{ fontWeight: 800, letterSpacing: "-0.01em", fontSize: "1.1rem" }}>
+            Skill Set
+          </Typography>
+        </Box>
+        <IconButton
+          onClick={onClose}
+          size="small"
+          sx={{
+            bgcolor: "action.hover",
+            borderRadius: "10px",
+            "&:hover": { bgcolor: "action.selected" },
+          }}
         >
-            <Box
-                sx={{
-                    display: "flex",
-                    flexDirection: "column",
-                    // backgroundColor: "red",
-                    opacity: 0.9,
-                    transition: "opacity 0.3s ease",
-                    height: "100%",
+          <CloseIcon fontSize="small" />
+        </IconButton>
+      </Box>
 
-                }}
-            >
-                <Box
-                    sx={{
-                        display: "flex",
-                        flexDirection: "row",
-                        justifyContent: "space-between",
-                        mb: 0,
-                    }}
-                >
-                    <Typography variant="h6" sx={{ m: 1 }}>Skill Set</Typography>
-                    <IconButton
-                        onClick={onClose}
-                        size="small"
-                        sx={{
-                            position: 'absolute',
-                            borderRadius: "20px",
-                            top: 10,
-                            right: 10,
-                            backgroundColor: 'transparent !important',
-                            border: "transparent !important",
-                            '&:hover': {
-                                backgroundColor: 'transparent',
-                                color: "black"
-                            },
-                        }}
-                    >
-                        <CloseIcon />
-                    </IconButton>
-                </Box>
-                <Divider sx={{ mb: 2 }} />
-                {/* Web Development (WD) */}
-                <AccordianWD
-                    expandedPanels={expandedPanels}
-                    handleChange={handleChange}
-                    theme={theme}
-                />
-                <Divider sx={{ my: 2 }} />
-                {/* Data Analytics (DA) */}
-                <AccordianDA
-                    expandedPanels={expandedPanels}
-                    handleChange={handleChange}
-                    theme={theme}
-                />
-                <Divider sx={{ my: 2 }} />
-                {/* Soft Skills (SS) */}
-                <AccordianSS
-                    expandedPanels={expandedPanels}
-                    handleChange={handleChange}
-                    theme={theme}
-                />
-            </Box>
-        </Drawer>
-    );
+      <Divider />
+
+      {/* Skill sections */}
+      <Box sx={{ p: 2, display: "flex", flexDirection: "column", gap: 2.5 }}>
+        <AccordianWD />
+        <AccordianDA />
+        <AccordianSS />
+      </Box>
+    </Drawer>
+  );
 };
 
 export default SkillsSidebar;

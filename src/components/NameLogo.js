@@ -1,32 +1,26 @@
-import * as React from "react";
-import {  Button } from "@mui/material";
-import Logo from '../assets/logo3.PNG';
+import React from "react";
+import { Button } from "@mui/material";
+import Logo from "../assets/logo3.PNG";
 import { Link } from "react-router-dom";
-import { alpha, useTheme } from "@mui/material/styles";
 
 export default function NameLogo() {
-
-  const theme = useTheme();
-
   return (
     <Button
       component={Link}
-      to='/home'
+      to="/home"
+      disableRipple
       sx={{
-        padding: 1,
-        borderRadius: "20%",
-        '&:hover': {
-          backgroundColor: "transparent",
-        },
+        p: 0.5,
+        minWidth: 0,
+        borderRadius: "12px",
+        "&:hover": { backgroundColor: "rgba(99,102,241,0.08)" },
+        transition: "background-color 0.2s ease",
       }}
     >
       <img
         src={Logo}
-        alt="Logo"
-        style={{
-          height: "80px",
-          objectFit: "contain",
-        }}
+        alt="Advik Maniar"
+        style={{ height: 52, objectFit: "contain" }}
       />
     </Button>
   );

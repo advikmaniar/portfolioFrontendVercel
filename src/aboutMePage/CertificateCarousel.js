@@ -1,184 +1,244 @@
-import * as React from "react";
-import { Container, IconButton, useMediaQuery } from "@mui/material";
-import { Box } from "@mui/material";
-import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
-import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
+import React, { useState, useEffect } from "react";
+import { Box, Typography, IconButton, useMediaQuery } from "@mui/material";
+import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
+import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
+import CloseIcon from "@mui/icons-material/Close";
+import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
 
-const CertificateCarousel = () => {
-    const bgImages = [
-        '/Certificates/Certificate1.png', '/Certificates/Certificate2.png', '/Certificates/Certificate3.jpg',
-        '/Certificates/Certificate4.png', '/Certificates/Certificate5.png', '/Certificates/Certificate6.png',
-        '/Certificates/Certificate7.png', '/Certificates/Certificate8.jpeg'
-    ];
-    const imageCaptions = [
-        'Natural Language Processing in TensorFlow', 'Intermediate Machine Learning', 'Python Bootcamp',
-        'Data Science Hackathon 2021 Runner-Up', 'Meta Front-End Development Certificate', 'Meta JavaScript Certificate',
-        'Meta Version Control Certificate', 'Data Science Hackathon 2022 Runner-Up'
-    ];
+const certificates = [
+  { src: "/Certificates/Certificate1.png", title: "Natural Language Processing in TensorFlow" },
+  { src: "/Certificates/Certificate2.png", title: "Intermediate Machine Learning" },
+  { src: "/Certificates/Certificate3.jpg", title: "Python Bootcamp" },
+  { src: "/Certificates/Certificate4.png", title: "Data Science Hackathon 2021 — Runner-Up" },
+  { src: "/Certificates/Certificate5.png", title: "Meta Front-End Development" },
+  { src: "/Certificates/Certificate6.png", title: "Meta JavaScript" },
+  { src: "/Certificates/Certificate7.png", title: "Meta Version Control" },
+  { src: "/Certificates/Certificate8.jpeg", title: "Data Science Hackathon 2022 — Runner-Up" },
+];
 
-    const [currentIndex, setCurrentIndex] = React.useState(0);
-    const [expandedImage, setExpandedImage] = React.useState(null);
-    const isSmallScreen = useMediaQuery('(max-width:800px)');
-    const isMediumScreen = useMediaQuery('(max-width:1000px)');
+export default function CertificateCarousel() {
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [expandedSrc, setExpandedSrc] = useState(null);
+  const isSmall = useMediaQuery("(max-width:600px)");
+  const isMedium = useMediaQuery("(max-width:960px)");
 
+  const visibleCount = isSmall ? 1 : isMedium ? 2 : 3;
 
-    React.useEffect(() => {
-        const interval = setInterval(() => {
-            setCurrentIndex((prevIndex) => (prevIndex + 1) % bgImages.length);
-        }, 3000);
-        return () => clearInterval(interval);
-    }, [bgImages.length]);
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentIndex((prev) => (prev + 1) % certificates.length);
+    }, 3500);
+    return () => clearInterval(interval);
+  }, []);
 
-    const handleImageClick = (image) => {
-        setExpandedImage(image);
-    };
+  const prev = () => setCurrentIndex((p) => (p - 1 + certificates.length) % certificates.length);
+  const next = () => setCurrentIndex((p) => (p + 1) % certificates.length);
 
-    const handleClose = () => {
-        setExpandedImage(null);
-    };
+  const visibleItems = Array.from({ length: visibleCount }, (_, i) =>
+    certificates[(currentIndex + i) % certificates.length]
+  );
 
-    const getVisibleImages = () => {
-        const visibleImages = [];
-        let numVisibleImages;
-        if (isSmallScreen) {
-            numVisibleImages = 1;
-        } else if (isMediumScreen) {
-            numVisibleImages = 2;
-        } else {
-            numVisibleImages = 3;
-        }
-        for (let i = 0; i < numVisibleImages; i++) {
-            visibleImages.push((currentIndex + i) % bgImages.length);
-        }
-        return visibleImages;
-    };
-
-    const handlePrev = () => {
-        setCurrentIndex((prevIndex) => (prevIndex - 1 + bgImages.length) % bgImages.length);
-    };
-
-    const handleNext = () => {
-        setCurrentIndex((prevIndex) => (prevIndex + 1) % bgImages.length);
-    };
-
-    return (
-        <Container
+  return (
+    <>
+      <Box
+        sx={{
+          bgcolor: "background.paper",
+          border: "1px solid",
+          borderColor: "divider",
+          borderRadius: "20px",
+          p: { xs: 3, sm: 4 },
+          position: "relative",
+          overflow: "hidden",
+          "&::before": {
+            content: '""',
+            position: "absolute",
+            top: 0,
+            left: 0,
+            right: 0,
+            height: 3,
+            background: "linear-gradient(135deg, #6366f1, #06b6d4)",
+          },
+        }}
+      >
+        {/* Header */}
+        <Box sx={{ display: "flex", alignItems: "center", gap: 1.5, mb: 3 }}>
+          <Box
             sx={{
-                width: "100%",
+              width: 36,
+              height: 36,
+              borderRadius: "10px",
+              background: "linear-gradient(135deg, #6366f1, #06b6d4)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
             }}
-        >
-            <Box
-                sx={{
-                    borderRadius: "20px",
-                    backgroundColor: "background.paper",
-                    justifyItems: "center",
-                    opacity: 0.9,
-                    border: "2px solid",
-                    borderColor: (theme) => theme.palette.mode === 'dark' ? '#333333' : '#bbbbbb',
-                }}
-            >
-                <h2 style={{
-                    textAlign: "center",
-                    borderRadius: "16px",
-                    boxShadow: 5,
-                    width: "50%",
-                    backgroundColor: "transparent",
-                }}> Certificates</h2>
-                <Box
-                    sx={{
-                        width: "100%",
-                        paddingBottom: 5,
-                        height: "flex",
-                        borderRadius: "16px",
-                        display: "flex",
-                        justifyContent: "center",
-                        alignItems: "center",
-                        position: "relative",
-                    }}
-                >
-                    <IconButton
-                        sx={{ position: "absolute", left: 0 }}
-                        onClick={handlePrev}
-                    >
-                        <ArrowBackIosIcon />
-                    </IconButton>
-                    {getVisibleImages().map((index) => (
-                        <Box
-                            key={index}
-                            sx={{
-                                display: "flex",
-                                flexDirection: "column",
-                                justifyContent: "center",
-                                alignItems: "center",
-                                mx: 1,
-                            }}
-                        >
-                            <img
-                                src={bgImages[index]}
-                                alt={`Image ${index + 1}`}
-                                style={{
-                                    width: "flex",
-                                    height: "200px",
-                                    objectFit: "cover",
-                                    borderRadius: "16px",
-                                    cursor: "pointer",
-                                    transition: "transform 0.3s ease-in-out",
-                                }}
-                                onClick={() => handleImageClick(bgImages[index])}
-                                onMouseEnter={(e) => e.currentTarget.style.transform = "scale(1.1)"}
-                                onMouseLeave={(e) => e.currentTarget.style.transform = "scale(1)"}
-                            />
-                            <Box
-                                sx={{
-                                    mt: 1,
-                                    textAlign: "center",
-                                    boxShadow: 3,
-                                    borderRadius: 10,
-                                    fontFamily: "serif",
-                                    fontWeight: "bold",
-                                    padding: "5px",
-                                    color: "text.primary",
-                                    opacity: 0.8,
-                                    backgroundColor: (theme) => theme.palette.mode === 'dark' ? '#333333' : '#bbbbbb',
-                                }}
-                            >
-                                {imageCaptions[index]}
-                            </Box>
-                        </Box>
-                    ))}
-                    <IconButton
-                        sx={{ position: "absolute", right: 0 }}
-                        onClick={handleNext}
-                    >
-                        <ArrowForwardIosIcon />
-                    </IconButton>
-                </Box>
-            </Box>
-            {expandedImage && (
-                <Box
-                    sx={{
-                        position: "fixed",
-                        top: 0,
-                        left: 0,
-                        width: "100%",
-                        height: "100%",
-                        backgroundColor: "rgba(0, 0, 0, 0.8)",
-                        display: "flex",
-                        justifyContent: "center",
-                        alignItems: "center",
-                        zIndex: 1000,
-                    }}
-                    onClick={handleClose}
-                >
-                    <img
-                        src={expandedImage}
-                        alt="Expanded"
-                        style={{ maxWidth: "90%", maxHeight: "90%", borderRadius: "8px" }}
-                    />
-                </Box>
-            )}
-        </Container>
-    );
-}
+          >
+            <EmojiEventsIcon sx={{ color: "#fff", fontSize: 18 }} />
+          </Box>
+          <Box>
+            <Typography variant="overline" sx={{ color: "#6366f1", fontWeight: 700, letterSpacing: "0.12em", fontSize: "0.72rem", display: "block", lineHeight: 1 }}>
+              Achievements
+            </Typography>
+            <Typography variant="h6" sx={{ fontWeight: 800, letterSpacing: "-0.01em", fontSize: "1.1rem" }}>
+              Certificates & Awards
+            </Typography>
+          </Box>
+        </Box>
 
-export default CertificateCarousel;
+        {/* Carousel */}
+        <Box sx={{ position: "relative", display: "flex", alignItems: "center", gap: 2 }}>
+          <IconButton
+            onClick={prev}
+            size="small"
+            sx={{
+              flexShrink: 0,
+              border: "1px solid",
+              borderColor: "divider",
+              borderRadius: "10px",
+              transition: "all 0.2s ease",
+              "&:hover": { borderColor: "#6366f1", color: "#6366f1", background: "rgba(99,102,241,0.08)" },
+            }}
+          >
+            <ArrowBackIosNewIcon fontSize="small" />
+          </IconButton>
+
+          <Box sx={{ display: "flex", gap: 2, flex: 1, overflow: "hidden" }}>
+            {visibleItems.map((cert, i) => (
+              <Box
+                key={cert.src + i}
+                onClick={() => setExpandedSrc(cert.src)}
+                sx={{
+                  flex: 1,
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  gap: 1.5,
+                  cursor: "pointer",
+                  minWidth: 0,
+                }}
+              >
+                <Box
+                  sx={{
+                    width: "100%",
+                    height: { xs: 130, sm: 160 },
+                    borderRadius: "12px",
+                    overflow: "hidden",
+                    border: "1px solid",
+                    borderColor: "divider",
+                    transition: "all 0.3s ease",
+                    "&:hover": {
+                      borderColor: "rgba(99,102,241,0.5)",
+                      boxShadow: "0 4px 20px rgba(99,102,241,0.15)",
+                      transform: "scale(1.02)",
+                    },
+                  }}
+                >
+                  <Box
+                    component="img"
+                    src={cert.src}
+                    alt={cert.title}
+                    sx={{ width: "100%", height: "100%", objectFit: "cover" }}
+                  />
+                </Box>
+                <Typography
+                  variant="caption"
+                  sx={{
+                    textAlign: "center",
+                    fontWeight: 600,
+                    color: "text.secondary",
+                    fontSize: "0.72rem",
+                    lineHeight: 1.4,
+                    display: "-webkit-box",
+                    WebkitLineClamp: 2,
+                    WebkitBoxOrient: "vertical",
+                    overflow: "hidden",
+                  }}
+                >
+                  {cert.title}
+                </Typography>
+              </Box>
+            ))}
+          </Box>
+
+          <IconButton
+            onClick={next}
+            size="small"
+            sx={{
+              flexShrink: 0,
+              border: "1px solid",
+              borderColor: "divider",
+              borderRadius: "10px",
+              transition: "all 0.2s ease",
+              "&:hover": { borderColor: "#6366f1", color: "#6366f1", background: "rgba(99,102,241,0.08)" },
+            }}
+          >
+            <ArrowForwardIosIcon fontSize="small" />
+          </IconButton>
+        </Box>
+
+        {/* Indicator dots */}
+        <Box sx={{ display: "flex", justifyContent: "center", gap: 0.8, mt: 2.5 }}>
+          {certificates.map((_, i) => (
+            <Box
+              key={i}
+              onClick={() => setCurrentIndex(i)}
+              sx={{
+                width: i === currentIndex ? 18 : 6,
+                height: 6,
+                borderRadius: "3px",
+                bgcolor: i === currentIndex ? "#6366f1" : "divider",
+                cursor: "pointer",
+                transition: "all 0.25s ease",
+              }}
+            />
+          ))}
+        </Box>
+      </Box>
+
+      {/* Lightbox */}
+      {expandedSrc && (
+        <Box
+          onClick={() => setExpandedSrc(null)}
+          sx={{
+            position: "fixed",
+            inset: 0,
+            bgcolor: "rgba(0,0,0,0.85)",
+            backdropFilter: "blur(8px)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            zIndex: 2000,
+            p: 3,
+          }}
+        >
+          <IconButton
+            onClick={() => setExpandedSrc(null)}
+            sx={{
+              position: "absolute",
+              top: 16,
+              right: 16,
+              bgcolor: "rgba(255,255,255,0.1)",
+              color: "#fff",
+              "&:hover": { bgcolor: "rgba(255,255,255,0.2)" },
+            }}
+          >
+            <CloseIcon />
+          </IconButton>
+          <Box
+            component="img"
+            src={expandedSrc}
+            alt="Certificate"
+            onClick={(e) => e.stopPropagation()}
+            sx={{
+              maxWidth: "90vw",
+              maxHeight: "85vh",
+              objectFit: "contain",
+              borderRadius: "16px",
+              boxShadow: "0 24px 80px rgba(0,0,0,0.8)",
+            }}
+          />
+        </Box>
+      )}
+    </>
+  );
+}

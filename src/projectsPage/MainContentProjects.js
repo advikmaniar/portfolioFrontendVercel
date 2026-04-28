@@ -1,101 +1,72 @@
-import * as React from "react"
-import { Button, Typography, Box, Container, } from '@mui/material';
-import SoftwareProjects from "./SoftwareProjects";
-import DataProjects from "./DataProjects";
-import { LuFileSpreadsheet } from "react-icons/lu";
-import { IoChevronForwardOutline, IoChevronBackOutline } from "react-icons/io5";
-
+import React from "react";
+import { Box, Container, Typography } from "@mui/material";
+import AllProjects from "./AllProjects";
 
 export default function MainContentProjects() {
-
-  const [showDataProjects, setShowDataProjects] = React.useState(false);
-
-  const handleButtonClick = () => {
-    setShowDataProjects(true);
-  };
-
   return (
-    <Container
+    <Box
       sx={{
-        display: "flex",
-        flexDirection: "column",
-        gap: { xs: 2, sm: 1 },
-        p: { xs: "30px 10px", sm: "0px 20px 0px 20px" },
-        alignItems: "left",
+        minHeight: "calc(100vh - 80px)",
+        px: { xs: 2, sm: 4, md: 6 },
+        py: { xs: 4, md: 6 },
+        position: "relative",
+        overflow: "hidden",
       }}
     >
-      <Box sx={{
-        display: "flex",
-        flexDirection: { xs: "column", sm: "row" },
-        alignItems: "center",
-        borderRadius: '10px',
-        p: '10px',
-        opacity: 0.9,
-        boxShadow: 3,
-        width: 'space-between',
-        backgroundColor: 'background.paper',
-      }}>
-        <Typography variant="h1" component="div"
-          sx={{
-            color: 'text.primary',
-            fontWeight: 'bold',
-            textAlign: 'center',
-            width: 'fit-content',
-            fontFamily: 'monospace',
-          }}
-        >
-          <span style={{ animation: 'pulse 5s infinite, zoomIn 2s 1' }}>&lt;/Portfolio📄&gt;</span>
-          
-        </Typography>
-        <Button
-          variant="contained"
-          color="primary"
-          size="large"
-          sx={{
-            marginLeft: { xs: 0, sm: 'auto' },
-            marginTop: { xs: 2, sm: 0 },
-            fontWeight: 'bold',
-            fontSize: '1rem',
-            textTransform: 'none',
-          }}
-          startIcon={showDataProjects ? <IoChevronBackOutline /> : null}
-          endIcon={!showDataProjects ? <IoChevronForwardOutline /> : null}
-          onClick={() => setShowDataProjects(!showDataProjects)}
-        >
-          {showDataProjects ? "Back to Apps" : "Data Projects"}
-        </Button>
-      </Box>
-      <Box sx={{
-        flex: { xs: 1, sm: 5 },
-        width: "100%"
-      }}>
-        {showDataProjects ? <DataProjects /> : <SoftwareProjects />}
-      </Box>
-      <style>
-        {`
-        @keyframes rubberBand {
-            0% { transform: scale(1); }
-            30% { transform: scale(1.25, 0.75); }
-            40% { transform: scale(0.75, 1.25); }
-            50% { transform: scale(1.15, 0.85); }
-            65% { transform: scale(0.95, 1.05); }
-            75% { transform: scale(1.05, 0.95); }
-            100% { transform: scale(1); }
-          }
-          @keyframes zoomIn {
-            0% { transform: scale(0); }
-            100% { transform: scale(1); }
-          }
-          @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1); }
-          }
-          span {
-            display: inline-block;
-          }
-        `}
-      </style>
-    </Container>
+      {/* Background orb */}
+      <Box
+        sx={{
+          position: "fixed",
+          top: "20%",
+          right: "-10%",
+          width: "35vw",
+          height: "35vw",
+          borderRadius: "50%",
+          background: "radial-gradient(circle, rgba(99,102,241,0.05) 0%, transparent 70%)",
+          pointerEvents: "none",
+          zIndex: 0,
+        }}
+      />
+
+      <Container maxWidth="lg" sx={{ position: "relative", zIndex: 1 }}>
+        {/* Section header */}
+        <Box sx={{ mb: 5 }}>
+          <Typography
+            variant="overline"
+            sx={{ color: "#6366f1", fontWeight: 700, letterSpacing: "0.15em", fontSize: "0.72rem" }}
+          >
+            My Work
+          </Typography>
+          <Typography
+            component="h1"
+            sx={{
+              fontSize: { xs: "2rem", sm: "2.8rem", md: "3.2rem" },
+              fontWeight: 900,
+              letterSpacing: "-0.03em",
+              lineHeight: 1.1,
+              mt: 0.5,
+              mb: 1,
+            }}
+          >
+            <Box
+              component="span"
+              sx={{
+                background: "linear-gradient(135deg, #6366f1, #06b6d4)",
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+                backgroundClip: "text",
+              }}
+            >
+              {"<Portfolio />"}
+            </Box>
+          </Typography>
+          <Typography variant="body1" color="text.secondary" sx={{ fontSize: "1rem", maxWidth: 560 }}>
+            Full-stack apps, machine learning models, and fintech tools — a selection of projects built across industries and tech stacks.
+          </Typography>
+        </Box>
+
+        <AllProjects />
+      </Container>
+    </Box>
   );
 }

@@ -1,148 +1,205 @@
-import { Container, Typography, IconButton } from '@mui/material';
-import { Twitter, LinkedIn, GitHub, Instagram } from '@mui/icons-material';
+import React, { useEffect, useState } from "react";
+import { Box, Typography, IconButton, Button, Chip } from "@mui/material";
+import { LinkedIn, GitHub, Instagram } from "@mui/icons-material";
 import { FaKaggle } from "react-icons/fa";
-import React from 'react';
-import EmojiPicker from 'emoji-picker-react';
-import { useState, useEffect } from 'react';
+import { RiPagesLine } from "react-icons/ri";
+import { Link } from "react-router-dom";
+import CVFile from "../assets/Advik_CV.pdf";
 
-const StyledIcons = ({ color, bgColor, hoverColor, icon, url }) => {
-    return (
-        <a href={url} target="_blank" rel="noopener noreferrer" style={{ textDecoration: "none" }}>
-            <IconButton
-                sx={{
-                    borderRadius: "50%",
-                    backgroundColor: bgColor,
-                    '&:hover': {
-                        backgroundColor: hoverColor,
-                        transform: "scale(1.2)",
-                        boxShadow: "0px 8px 16px rgba(0, 0, 0, 0.3)",
-                    },
-                    transition: "all 0.3s ease",
-                }}
-                aria-label={color}
-            >
-                {React.cloneElement(icon, { sx: { color: "white" } })}
-            </IconButton>
-        </a>
-    );
-};
+const socialLinks = [
+  { label: "LinkedIn", icon: <LinkedIn />, url: "https://www.linkedin.com/in/advikmaniar/", color: "#0077b5" },
+  { label: "GitHub", icon: <GitHub />, url: "https://github.com/advikmaniar", color: "#6e5494" },
+  { label: "Kaggle", icon: <FaKaggle size={18} />, url: "https://www.kaggle.com/advikmaniar", color: "#1da1f2" },
+  { label: "Instagram", icon: <Instagram />, url: "https://www.instagram.com/advik0220/", color: "#e4405f" },
+];
 
-const NameCard = () => {
-    return (
-        <Container sx={{
-            display: "flex",
-            flexDirection: "column",
-            bgcolor: "background.paper",
-            height: "flex",
-            width: "max-content",
-            p: "30px 50px 30px 50px",
-            borderRadius: "16px",
-            alignItems: "center",
-            boxShadow: 1,
-            transition: "all 0.5s ease",
-            '&:hover': {
-                boxShadow: 3,
-                transform: "scale(1.02)",
+export default function NameCard() {
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    const t = setTimeout(() => setVisible(true), 100);
+    return () => clearTimeout(t);
+  }, []);
+
+  return (
+    <Box
+      sx={{
+        opacity: visible ? 1 : 0,
+        transform: visible ? "translateY(0)" : "translateY(24px)",
+        transition: "opacity 0.7s ease, transform 0.7s ease",
+      }}
+    >
+      {/* Available badge */}
+      <Chip
+        label="👋  Available for opportunities"
+        size="small"
+        sx={{
+          mb: 3,
+          bgcolor: "rgba(99,102,241,0.1)",
+          color: "#6366f1",
+          border: "1px solid rgba(99,102,241,0.25)",
+          fontWeight: 600,
+          fontSize: "0.78rem",
+          borderRadius: "20px",
+          px: 0.5,
+        }}
+      />
+
+      {/* Greeting */}
+      <Typography
+        variant="h6"
+        sx={{
+          color: "text.secondary",
+          fontSize: { xs: "1rem", sm: "1.1rem" },
+          fontWeight: 500,
+          mb: 0.5,
+        }}
+      >
+        Hi, I'm
+      </Typography>
+
+      {/* Name — plain text so gradient background-clip works correctly */}
+      <Typography
+        component="h1"
+        sx={{
+          fontSize: { xs: "2.8rem", sm: "4rem", md: "4.8rem", lg: "5.2rem" },
+          fontWeight: 900,
+          lineHeight: 1.05,
+          letterSpacing: "-0.04em",
+          mb: 1.5,
+          background: "linear-gradient(135deg, #6366f1 0%, #06b6d4 100%)",
+          WebkitBackgroundClip: "text",
+          WebkitTextFillColor: "transparent",
+          backgroundClip: "text",
+        }}
+      >
+        Advik Maniar
+      </Typography>
+
+      {/* Title */}
+      <Typography
+        variant="h4"
+        sx={{
+          fontSize: { xs: "1.1rem", sm: "1.35rem" },
+          fontWeight: 600,
+          color: "text.secondary",
+          mb: 2,
+          letterSpacing: "-0.01em",
+        }}
+      >
+        Software Developer&nbsp;&nbsp;·&nbsp;&nbsp;New York, NY
+      </Typography>
+
+      {/* Tagline */}
+      <Typography
+        variant="body1"
+        sx={{
+          color: "text.secondary",
+          fontSize: { xs: "0.95rem", sm: "1.05rem" },
+          lineHeight: 1.7,
+          maxWidth: 520,
+          mb: 3.5,
+        }}
+      >
+        Building high-impact software at{" "}
+        <Box
+          component="a"
+          href="https://www.voya.com"
+          target="_blank"
+          rel="noopener noreferrer"
+          sx={{
+            color: "#f97316",
+            fontWeight: 600,
+            textDecoration: "none",
+            "&:hover": { textDecoration: "underline" },
+          }}
+        >
+          Voya Financial
+        </Box>
+        . Passionate about full-stack development, machine learning, and building things that matter.
+      </Typography>
+
+      {/* Social icons */}
+      <Box sx={{ display: "flex", gap: 1, mb: 3.5 }}>
+        {socialLinks.map(({ label, icon, url, color }) => (
+          <IconButton
+            key={label}
+            component="a"
+            href={url}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={label}
+            sx={{
+              border: "1px solid",
+              borderColor: "divider",
+              borderRadius: "12px",
+              color: "text.secondary",
+              transition: "all 0.25s ease",
+              "&:hover": {
+                borderColor: color,
+                color: color,
+                background: `${color}18`,
+                transform: "translateY(-3px)",
+                boxShadow: `0 6px 20px ${color}30`,
+              },
+            }}
+          >
+            {icon}
+          </IconButton>
+        ))}
+      </Box>
+
+      {/* CTA buttons */}
+      <Box sx={{ display: "flex", gap: 2, flexWrap: "wrap" }}>
+        <Button
+          component={Link}
+          to="/projects"
+          sx={{
+            background: "linear-gradient(135deg, #6366f1, #06b6d4)",
+            color: "#fff",
+            fontWeight: 700,
+            fontSize: "0.95rem",
+            borderRadius: "12px",
+            px: 3,
+            py: 1.3,
+            textTransform: "none",
+            boxShadow: "0 4px 20px rgba(99,102,241,0.35)",
+            transition: "all 0.3s ease",
+            "&:hover": {
+              background: "linear-gradient(135deg, #4f46e5, #0891b2)",
+              boxShadow: "0 6px 28px rgba(99,102,241,0.5)",
+              transform: "translateY(-2px)",
             },
-        }}>
-            <Typography variant="h4" sx={{
-                fontWeight: "bold",
-                fontSize: { xs: '36px', sm: '60px' },
-                display: "inline",
-            }}>
-                <Typography variant="h4" sx={{
-                    display: { xs: 'none', sm: 'none', md: 'inline' },
-                    fontSize: { xs: '36px', sm: '60px' },
-                }}>
-                    Hi👋, i'm 
-                </Typography>
-                <span className="animated-text">
-                    <u>
-                        {Array.from(" Advik Maniar").map((letter, index) => (
-                            <span key={index}>{letter === ' ' ? '\u00A0' : letter}</span>
-                        ))}
-                    </u>
-                </span>
-            </Typography>
-            <style>
-                {`
-                @keyframes fadeInLetter {
-                    from {
-                        opacity: 0;
-                        transform: translateY(-20px);
-                    }
-                    to {
-                        opacity: 1;
-                        transform: translateY(0);
-                    }
-                }
-                .animated-text u {
-                    display: inline-block;
-                }
-                .animated-text u span {
-                    display: inline-block;
-                    opacity: 0;
-                    animation: fadeInLetter 0.5s forwards;
-                }
-                .animated-text u span:nth-child(1) { animation-delay: 0s; }
-                .animated-text u span:nth-child(2) { animation-delay: 0.1s; }
-                .animated-text u span:nth-child(3) { animation-delay: 0.2s; }
-                .animated-text u span:nth-child(4) { animation-delay: 0.3s; }
-                .animated-text u span:nth-child(5) { animation-delay: 0.4s; }
-                .animated-text u span:nth-child(6) { animation-delay: 0.5s; }
-                .animated-text u span:nth-child(7) { animation-delay: 0.6s; }
-                .animated-text u span:nth-child(8) { animation-delay: 0.7s; }
-                .animated-text u span:nth-child(9) { animation-delay: 0.8s; }
-                .animated-text u span:nth-child(10) { animation-delay: 0.9s; }
-                .animated-text u span:nth-child(11) { animation-delay: 1s; }
-            `}
-            </style>
-            <Typography variant="h6" sx={{
-                fontSize: 25,
-                color: "text.secondary",
-                display: { xs: 'none', sm: 'block' },
-            }}>
-                Software Developer based In New York
-            </Typography>
-
-            {/* Social Media Icons */}
-            <Container sx={{
-                display: "flex",
-                justifyContent: "center",
-                gap: 2,
-                mt: 3,
-            }}>
-                <StyledIcons
-                    color="linkedin"
-                    bgColor="#0077b5"
-                    hoverColor="#005c8a"
-                    icon={<LinkedIn fontSize="medium" />}
-                    url="https://www.linkedin.com/in/advikmaniar/"
-                />
-                <StyledIcons
-                    color="github"
-                    bgColor="#333"
-                    hoverColor="#444"
-                    icon={<GitHub fontSize="medium" />}
-                    url="https://github.com/advikmaniar"
-                />
-                <StyledIcons
-                    color="kaggle"
-                    bgColor="#1da1f2"
-                    hoverColor="#1991c6"
-                    icon={<FaKaggle fontSize="medium" />}
-                    url="https://www.kaggle.com/advikmaniar"
-                />
-                <StyledIcons
-                    color="instagram"
-                    bgColor="#e4405f"
-                    hoverColor="#b32f46"
-                    icon={<Instagram fontSize="medium" />}
-                    url="https://www.instagram.com/advik0220/"
-                />
-            </Container>
-        </Container>
-    );
+          }}
+        >
+          View My Work →
+        </Button>
+        <Button
+          href={CVFile}
+          target="_blank"
+          rel="noopener noreferrer"
+          endIcon={<RiPagesLine />}
+          sx={{
+            border: "1px solid",
+            borderColor: "rgba(99,102,241,0.4)",
+            color: (theme) => theme.palette.mode === "dark" ? "#e2e8f0" : "#1e293b",
+            fontWeight: 600,
+            fontSize: "0.95rem",
+            borderRadius: "12px",
+            px: 3,
+            py: 1.3,
+            textTransform: "none",
+            transition: "all 0.3s ease",
+            "&:hover": {
+              borderColor: "#6366f1",
+              background: "rgba(99,102,241,0.08)",
+              transform: "translateY(-2px)",
+            },
+          }}
+        >
+          Download CV
+        </Button>
+      </Box>
+    </Box>
+  );
 }
-
-export default NameCard;

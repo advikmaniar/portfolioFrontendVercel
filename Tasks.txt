@@ -9,7 +9,9 @@ Issues:
 - Nodemailer auth failing
 
 
-AWS Deployment - 
-Connect to EC2 instance => ssh -i ec2-keynew.pem ubuntu@34.238.126.44
-SCP Transfer => scp -i ec2-keynew.pem -r /build ec2-user@34.238.126.44:~
+
+
+
+
+sudo env PATH=$PATH:/usr/bin /usr/lib/node_modules/pm2/bin/pm2 startup systemd -u ubuntu --hp /home/ubuntu
 

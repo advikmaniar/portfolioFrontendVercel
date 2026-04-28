@@ -1,241 +1,296 @@
 import React, { useState } from "react";
-import { Modal, Box, Typography, IconButton, Button, TextField, Container, Alert, Divider } from '@mui/material';
-import { Close as CloseIcon } from '@mui/icons-material';
-import { LinkedIn, GitHub, Instagram } from '@mui/icons-material';
+import {
+  Modal, Box, Typography, IconButton, Button,
+  TextField, Alert, Stack,
+} from "@mui/material";
+import { Close as CloseIcon, LinkedIn, GitHub, Instagram, Send } from "@mui/icons-material";
 import { FaKaggle } from "react-icons/fa";
 import axios from "axios";
 
-const StyledIcons = ({ color, bgColor, hoverColor, icon, url }) => {
-    return (
-        <a href={url} target="_blank" rel="noopener noreferrer" style={{ textDecoration: "none" }}>
-            <IconButton
-                sx={{
-                    borderRadius: "50%",
-                    backgroundColor: bgColor,
-                    '&:hover': {
-                        backgroundColor: hoverColor,
-                        transform: "scale(1.2)",
-                        boxShadow: "0px 8px 16px rgba(0, 0, 0, 0.3)",
-                    },
-                    transition: "all 0.3s ease",
-                }}
-                aria-label={color}
-            >
-                {React.cloneElement(icon, { sx: { color: "white" } })}
-            </IconButton>
-        </a>
-    );
-};
+const socialLinks = [
+  {
+    label: "LinkedIn",
+    icon: <LinkedIn />,
+    url: "https://www.linkedin.com/in/advikmaniar/",
+    color: "#0077b5",
+  },
+  {
+    label: "GitHub",
+    icon: <GitHub />,
+    url: "https://github.com/advikmaniar",
+    color: "#6e5494",
+  },
+  {
+    label: "Kaggle",
+    icon: <FaKaggle size={18} />,
+    url: "https://www.kaggle.com/advikmaniar",
+    color: "#1da1f2",
+  },
+  {
+    label: "Instagram",
+    icon: <Instagram />,
+    url: "https://www.instagram.com/advik0220/",
+    color: "#e4405f",
+  },
+];
 
 const ContactPopup = ({ open, onClose }) => {
+  const [formData, setFormData] = useState({ name: "", email: "", message: "" });
+  const [status, setStatus] = useState(null);
+  const [loading, setLoading] = useState(false);
 
-    const [formData, setFormData] = useState({
-        name: "",
-        email: "",
-        message: "",
-    });
-    const [status, setStatus] = useState(null);
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
 
-    const handleChange = (event) => {
-        const { name, value } = event.target;
-        setFormData((prev) => ({ ...prev, [name]: value }));
-    };
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setStatus(null);
+    setLoading(true);
+    try {
+      await axios.post("http://localhost:5000/api/send-email", formData, {
+        headers: { "Content-Type": "application/json" },
+      });
+      setStatus({ type: "success", message: "Message sent! I'll get back to you within 24 hours." });
+      setFormData({ name: "", email: "", message: "" });
+    } catch {
+      setStatus({ type: "error", message: "Failed to send. Please email me directly at advikmaniar20@gmail.com" });
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    const handleSubmit = async (event) => {
-        event.preventDefault();
-        setStatus(null);
+  const inputSx = {
+    "& .MuiOutlinedInput-root": {
+      borderRadius: "12px",
+      "& fieldset": { borderColor: "rgba(99,102,241,0.2)" },
+      "&:hover fieldset": { borderColor: "rgba(99,102,241,0.5)" },
+      "&.Mui-focused fieldset": { borderColor: "#6366f1" },
+    },
+    "& label.Mui-focused": { color: "#6366f1" },
+  };
 
-        try {
-            const response = await axios.post("http://localhost:5000/send-email", formData, {
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            });
-            setStatus({ type: "success", message: "Message sent successfully!" });
-            setFormData({ name: "", email: "", message: "" });
-        } catch (error) {
-            setStatus({ type: "error", message: "Failed to send message. Please try again." });
-            console.error(error);
-        }
-    };
+  return (
+    <Modal open={open} onClose={onClose}>
+      <Box
+        sx={{
+          position: "absolute",
+          top: "50%",
+          left: "50%",
+          transform: "translate(-50%, -50%)",
+          width: { xs: "92vw", sm: 480 },
+          maxHeight: "90vh",
+          overflowY: "auto",
+          bgcolor: "background.paper",
+          borderRadius: "20px",
+          border: "1px solid",
+          borderColor: "divider",
+          boxShadow: "0 24px 80px rgba(0,0,0,0.4)",
+          outline: "none",
+        }}
+      >
+        {/* Header gradient bar */}
+        <Box
+          sx={{
+            height: 4,
+            background: "linear-gradient(135deg, #6366f1, #06b6d4)",
+            borderRadius: "20px 20px 0 0",
+          }}
+        />
 
-    return (
-        <Modal
-            open={open}
-            onClose={onClose}
-            aria-labelledby="contact-modal-title"
-        >
-            <Box sx={{
-                position: 'absolute',
-                top: '50%',
-                left: '50%',
-                transform: 'translate(-50%, -50%)',
-                width: '90%',
-                maxWidth: 500,
-                bgcolor: 'background.paper',
-                borderRadius: 2,
-                boxShadow: 20,
-                p: 4,
+        <Box sx={{ p: { xs: 3, sm: 4 } }}>
+          {/* Close button */}
+          <IconButton
+            onClick={onClose}
+            size="small"
+            sx={{
+              position: "absolute",
+              top: 16,
+              right: 16,
+              bgcolor: "action.hover",
+              borderRadius: "10px",
+              "&:hover": { bgcolor: "action.selected" },
             }}
-            >
-                <Box
-                    sx={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        mb: 1
-                    }}
-                >
-                    <Typography id="contact-modal-title" variant="h4">
-                        Let's Connect!
-                    </Typography>
-                    <Typography id="contact-modal-body" variant="body2" color="textSecondary">
-                        Send me a message and I will get back within 24 hours
-                    </Typography>
-                    <Divider sx={{ width: "100%", mt: 2 }} />
-                    <IconButton
-                        onClick={onClose}
-                        size="small"
-                        sx={{
-                            position: 'absolute',
-                            borderRadius: "20px",
-                            top: 10,
-                            right: 10,
-                            backgroundColor: 'transparent !important',
-                            border: "transparent !important",
-                            '&:hover': {
-                                backgroundColor: 'transparent',
-                                color: "black"
-                            },
-                        }}
-                    >
-                        <CloseIcon />
-                    </IconButton>
-                </Box>
-                <Container sx={{
-                    display: "flex",
-                    justifyContent: "center",
-                    width: "fit-content",
-                    borderRadius: 5,
-                    gap: 2,
-                    py: 1,
-                    my: 1,
-                }}>
-                    <StyledIcons
-                        color="linkedin"
-                        bgColor="#0077b5"
-                        hoverColor="#005c8a"
-                        icon={<LinkedIn fontSize="medium" />}
-                        url="https://www.linkedin.com/in/advikmaniar/"
-                    />
-                    <StyledIcons
-                        color="github"
-                        bgColor="#333"
-                        hoverColor="#444"
-                        icon={<GitHub fontSize="medium" />}
-                        url="https://github.com/advikmaniar"
-                    />
-                    <StyledIcons
-                        color="kaggle"
-                        bgColor="#1da1f2"
-                        hoverColor="#1991c6"
-                        icon={<FaKaggle fontSize="medium" />}
-                        url="https://www.kaggle.com/advikmaniar"
-                    />
-                    <StyledIcons
-                        color="instagram"
-                        bgColor="#e4405f"
-                        hoverColor="#b32f46"
-                        icon={<Instagram fontSize="medium" />}
-                        url="https://www.instagram.com/advik0220/"
-                    />
-                </Container>
-                <Box sx={{ mb: 3, textAlign: 'center' }}>
-                    <Typography variant="body1">
-                        Email: <a href="mailto:advik.maniar@gmail.com">advik.maniar@gmail.com</a>
-                    </Typography>
-                </Box>
+          >
+            <CloseIcon fontSize="small" />
+          </IconButton>
 
-                {/* Contact Form */}
-                {status && (
-                    <Alert severity={status.type} sx={{ mb: 2 }}>
-                        {status.message}
-                    </Alert>
-                )}
-                <form onSubmit={handleSubmit}>
-                    <Box>
-                        <TextField
-                            name="name"
-                            label="First Name"
-                            fullWidth
-                            sx={{ mb: 2 }}
-                            value={formData.name}
-                            onChange={handleChange}
-                            type="text"
-                            required
-                        />
-                        <TextField
-                            name="email"
-                            label="Email"
-                            fullWidth
-                            sx={{ mb: 2 }}
-                            value={formData.email}
-                            onChange={handleChange}
-                            type="email"
-                            required
-                        />
-                        <TextField
-                            name="message"
-                            label="Message"
-                            fullWidth
-                            sx={{
-                                mb: 2,
-                                '& .MuiInputBase-root': {
-                                    minHeight: '120px',
-                                    resize: 'vertical',
-                                },
-                            }}
-                            value={formData.message}
-                            onChange={handleChange}
-                            multiline
-                            rows={4}
-                            required
-                        />
-                    </Box>
-                    <Box
-                        sx={{
-                            display: "flex",
-                            justifyContent: 'center'
-                        }}>
-                        <Button
-                            variant="contained"
-                            type="submit"
-                            sx={{
-                                bgcolor: "primary.main",
-                                color: "background.paper",
-                                borderRadius: "8px",
-                                width: "fit-content",
-                                fontWeight: "bold",
-                                boxShadow: 3,
-                                gap: 0.5,
-                                transition: "all 0.3s ease",
-                                '&:hover': {
-                                    bgcolor: "primary.dark",
-                                    boxShadow: 6,
-                                    transform: "translateY(-2px)",
-                                },
-                            }}
-                        >
-                            <Typography variant="text1">
-                                Send
-                            </Typography>
-                        </Button>
-                    </Box>
-                </form>
+          {/* Title */}
+          <Typography
+            variant="h5"
+            sx={{
+              fontWeight: 800,
+              mb: 0.5,
+              background: "linear-gradient(135deg, #6366f1, #06b6d4)",
+              WebkitBackgroundClip: "text",
+              WebkitTextFillColor: "transparent",
+              backgroundClip: "text",
+            }}
+          >
+            Let's Connect
+          </Typography>
+          <Typography variant="body2" color="text.secondary" sx={{ mb: 2.5 }}>
+            Send a message and I'll respond within 24 hours.
+          </Typography>
+
+          {/* Social icons */}
+          <Stack direction="row" spacing={1} sx={{ mb: 2.5 }}>
+            {socialLinks.map(({ label, icon, url, color }) => (
+              <IconButton
+                key={label}
+                component="a"
+                href={url}
+                target="_blank"
+                rel="noopener noreferrer"
+                size="small"
+                sx={{
+                  border: "1px solid",
+                  borderColor: "divider",
+                  borderRadius: "10px",
+                  color: "text.secondary",
+                  transition: "all 0.2s ease",
+                  "&:hover": {
+                    borderColor: color,
+                    color: color,
+                    background: `${color}18`,
+                    transform: "translateY(-2px)",
+                  },
+                }}
+              >
+                {icon}
+              </IconButton>
+            ))}
+          </Stack>
+
+          {/* Email direct */}
+          <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+            Or email:{" "}
+            <Box
+              component="a"
+              href="mailto:advikmaniar20@gmail.com"
+              sx={{
+                color: "#6366f1",
+                textDecoration: "none",
+                fontWeight: 600,
+                "&:hover": { textDecoration: "underline" },
+              }}
+            >
+              advikmaniar20@gmail.com
             </Box>
-        </Modal>
-    );
+          </Typography>
+
+          {/* Status alert */}
+          {status && (
+            <Alert severity={status.type} sx={{ mb: 2, borderRadius: "12px" }}>
+              {status.message}
+            </Alert>
+          )}
+
+          {/* Form */}
+          <Box component="form" onSubmit={handleSubmit}>
+            <TextField
+              name="name"
+              label="Your Name"
+              fullWidth
+              required
+              value={formData.name}
+              onChange={handleChange}
+              sx={{ ...inputSx, mb: 2 }}
+            />
+            <TextField
+              name="email"
+              label="Email Address"
+              type="email"
+              fullWidth
+              required
+              value={formData.email}
+              onChange={handleChange}
+              sx={{ ...inputSx, mb: 2 }}
+            />
+            {/* Native textarea — avoids MUI floating label misalignment on multiline */}
+            <Box sx={{ mb: 3 }}>
+              <Box
+                component="label"
+                htmlFor="contact-message"
+                sx={{
+                  display: "block",
+                  mb: 0.8,
+                  fontSize: "0.85rem",
+                  fontWeight: 500,
+                  color: "text.secondary",
+                  fontFamily: "inherit",
+                  cursor: "text",
+                }}
+              >
+                Message *
+              </Box>
+              <Box
+                id="contact-message"
+                component="textarea"
+                name="message"
+                required
+                rows={5}
+                value={formData.message}
+                onChange={handleChange}
+                placeholder="Write your message here..."
+                sx={{
+                  display: "block",
+                  width: "100%",
+                  padding: "12px 14px",
+                  borderRadius: "12px",
+                  border: "1px solid rgba(99,102,241,0.2)",
+                  bgcolor: "transparent",
+                  color: "text.primary",
+                  fontSize: "0.95rem",
+                  fontFamily: "inherit",
+                  lineHeight: 1.6,
+                  resize: "vertical",
+                  outline: "none",
+                  boxSizing: "border-box",
+                  transition: "border-color 0.2s ease, box-shadow 0.2s ease",
+                  "&:hover": { borderColor: "rgba(99,102,241,0.5)" },
+                  "&:focus": {
+                    borderColor: "#6366f1",
+                    boxShadow: "0 0 0 3px rgba(99,102,241,0.12)",
+                  },
+                  "&::placeholder": { color: "text.disabled", opacity: 1 },
+                }}
+              />
+            </Box>
+            <Button
+              type="submit"
+              fullWidth
+              disabled={loading}
+              endIcon={<Send />}
+              sx={{
+                background: "linear-gradient(135deg, #6366f1, #06b6d4)",
+                color: "#fff",
+                fontWeight: 700,
+                fontSize: "0.95rem",
+                py: 1.4,
+                borderRadius: "12px",
+                textTransform: "none",
+                boxShadow: "0 4px 16px rgba(99,102,241,0.35)",
+                transition: "all 0.3s ease",
+                "&:hover": {
+                  background: "linear-gradient(135deg, #4f46e5, #0891b2)",
+                  boxShadow: "0 6px 24px rgba(99,102,241,0.5)",
+                  transform: "translateY(-2px)",
+                },
+                "&.Mui-disabled": {
+                  background: "rgba(99,102,241,0.3)",
+                  color: "rgba(255,255,255,0.5)",
+                },
+              }}
+            >
+              {loading ? "Sending..." : "Send Message"}
+            </Button>
+          </Box>
+        </Box>
+      </Box>
+    </Modal>
+  );
 };
 
 export default ContactPopup;

@@ -1,50 +1,78 @@
 import { useState, useEffect } from "react";
-import { IconButton } from "@mui/material";
+import { IconButton, Tooltip, Typography, Box } from "@mui/material";
 import FavoriteIcon from "@mui/icons-material/Favorite";
+import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
+import axios from "axios";
 
-const LikeButton = ({ projectId }) => {
-    const initialLiked = localStorage.getItem(`liked_${projectId}`) === "true";
-    const initialCount = parseInt(localStorage.getItem(`likeCount_${projectId}`)) || 0;
+const LikeButton = ({ projectName }) => {
+  const [liked, setLiked] = useState(false);
+  const [likeCount, setLikeCount] = useState(0);
 
-    const [liked, setLiked] = useState(initialLiked);
-    const [likeCount, setLikeCount] = useState(initialCount);
+  const getUserId = () => {
+    let id = localStorage.getItem("userId");
+    if (!id) {
+      id = "user-" + Math.random().toString(36).substr(2, 9);
+      localStorage.setItem("userId", id);
+    }
+    return id;
+  };
 
-    useEffect(() => {
-        localStorage.setItem(`liked_${projectId}`, liked);
-        localStorage.setItem(`likeCount_${projectId}`, likeCount);
-    }, [liked, likeCount, projectId]);
+  useEffect(() => {
+    const userId = getUserId();
+    axios
+      .get(`http://localhost:5000/api/likes/${encodeURIComponent(projectName)}`, { params: { userId } })
+      .then((res) => {
+        setLikeCount(res.data.likeCount);
+        setLiked(res.data.liked);
+      })
+      .catch(() => {});
+  }, [projectName]);
 
-    const handleLikeToggle = (event) => {
-        event.stopPropagation();
+  const handleToggle = async (e) => {
+    e.stopPropagation();
+    const userId = getUserId();
+    try {
+      const res = await axios.post(
+        `http://localhost:5000/api/likes/${encodeURIComponent(projectName)}`,
+        { userId }
+      );
+      setLikeCount(res.data.likeCount);
+      setLiked(res.data.liked);
+    } catch {}
+  };
 
-        if (liked) {
-            setLiked(false);
-            setLikeCount(likeCount - 1);
-        } else {
-            setLiked(true);
-            setLikeCount(likeCount + 1);
-        }
-    };
-
-    return (
-        <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-            <IconButton
-                sx={{
-                    color: liked ? "red" : "grey",
-                    borderRadius: "30%",
-                    "&:hover": {
-                        transform: "scale(1.2)",
-                        boxShadow: "0px 8px 16px rgba(0, 0, 0, 0.3)",
-                    },
-                    transition: "all 0.3s ease",
-                }}
-                onClick={handleLikeToggle}
-            >
-                <FavoriteIcon />
-            </IconButton>
-            <span style={{ fontSize: "1rem", fontWeight: "bold" }}>{likeCount}</span>
-        </div>
-    );
+  return (
+    <Tooltip title={`${likeCount} like${likeCount !== 1 ? "s" : ""}`} arrow>
+      <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
+        <IconButton
+          onClick={handleToggle}
+          size="small"
+          sx={{
+            color: liked ? "#f43f5e" : "text.secondary",
+            borderRadius: "10px",
+            p: 0.7,
+            border: "1px solid",
+            borderColor: liked ? "rgba(244,63,94,0.3)" : "divider",
+            bgcolor: liked ? "rgba(244,63,94,0.08)" : "transparent",
+            transition: "all 0.25s ease",
+            "&:hover": {
+              color: "#f43f5e",
+              borderColor: "rgba(244,63,94,0.5)",
+              bgcolor: "rgba(244,63,94,0.12)",
+              transform: "scale(1.1)",
+            },
+          }}
+        >
+          {liked ? <FavoriteIcon fontSize="small" /> : <FavoriteBorderIcon fontSize="small" />}
+        </IconButton>
+        {likeCount > 0 && (
+          <Typography variant="caption" sx={{ fontWeight: 700, color: "text.secondary", fontSize: "0.75rem" }}>
+            {likeCount}
+          </Typography>
+        )}
+      </Box>
+    </Tooltip>
+  );
 };
 
 export default LikeButton;
