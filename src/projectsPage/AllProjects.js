@@ -81,9 +81,9 @@ const allProjects = [
     ],
     tools: ["Python", "Pandas", "NumPy", "REST APIs", "AWS", "Plotly"],
     images: [
-      "/TradEazyImages/HomePage.png",
-      "/TradEazyImages/TradesPAge.png",
-      "/TradEazyImages/ReportPage.png",
+      "/TradeazyImages/HomePage.png",
+      "/TradeazyImages/TradesPAge.png",
+      "/TradeazyImages/ReportPage.png",
     ],
     github: null,
     privateRepo: true,
